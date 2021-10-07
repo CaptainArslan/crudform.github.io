@@ -1,0 +1,147 @@
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+:root{
+    --lg-lightcolor: linear-gradient(to left, rgba(217, 151, 248, 0.5),rgba(8, 250, 250, 0.5));
+    --lg-color : linear-gradient(to left, #74ebd5, #9face6);
+}
+body{
+    /* background-image: var(--lg-lightcolor), url(../img/bg.jpg); */
+    background: none;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    display: fleX;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100vw;
+}
+.container{
+    margin: auto;
+    background: none;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    overflow: hidden;
+    width: calc(100vw - 50vw);
+    max-width: 100%;
+}
+.header{
+    background: var(--lg-color);
+    padding: 20px 0 ;
+}
+.header h2{
+    color: #222;
+    font-size: 24px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.form{
+    padding: 40px;
+}
+.form-control{
+    margin-bottom: 15px;
+    position: relative;
+}
+.form-control label{
+    display: inline-block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.form-control input[type=text],input[type=email],input[type=number],input[type=password],select{
+    width: 100%;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px ;
+    font: 14px;
+    padding: 12px;
+    display: block;
+}
+.form-control input[type=radio],input[type=checkbox]{
+    margin-left: 10px;
+    margin-right: 5px;
+}
+.gender, .interest{
+    margin: 3px;
+}
+.form-control input:focus{
+    outline: none;
+    border-color: #777;
+}
+
+.form-control.success input{
+    border-color: #2ecc71;
+}
+.form-control.error input{
+    border-color: #e74c3c;
+}
+
+.form-control.success select{
+    border-color: #2ecc71;
+}
+.form-control.error select{
+    border-color: #e74c3c;
+}
+
+.form-control i{
+    position: absolute;
+    right: 8px;
+    top: 45px;
+    visibility: hidden;
+}
+.form-control.success i.fa-check-circle{
+    color: #2ecc71;
+    visibility: visible;
+}
+.form-control.error i.fa-exclamation-circle{
+    color: #e74c3c;
+    visibility: visible;
+}
+
+.form-control small{
+    visibility: hidden;
+    text-transform: capitalize;
+}
+.form-control.error small{
+    color: #e74c3c;
+    visibility: visible;
+}
+.form-control.success small{
+    color: #2ecc71;
+    visibility: hidden;
+}
+
+
+
+
+
+.form .btn{
+    background: var(--lg-lightcolor); 
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    display: block;
+    font-size: 16px;
+    padding: 15px 0 ;
+    margin-top: 20px;
+    width: 100%;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 1s ease;
+}
+.form .btn:hover{
+    background:  linear-gradient(to right, #74ebd5, #9face6)
+}
+
+@media(max-width:998px){
+    .container{
+        width: calc(100vw - 35vw);
+        max-width: 100%;
+    }
+}
