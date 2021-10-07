@@ -2,18 +2,18 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registeration form</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
+        rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="css/all.min.css" />
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -24,12 +24,12 @@
         </div>
 
         <!-- Call  Comfirm function here -->
-        
-        <form class="form" action="index.php" id="form" name="form" onsubmit=" return Validate() ">
+
+        <form class="form" action="" id="form" name="form" onsubmit=" return Validate()  ">
             <!-- User Name -->
             <div class="form-control">
                 <label for="user Name"> Name </label>
-                <input type="text" name="name" id="username" placeholder="Enter Your Full Name" autocomplete="off" />
+                <input type="text" name="name" id="username" placeholder="Enter Your Full Name" autocomplete="off">
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -38,7 +38,7 @@
             <!-- User Email -->
             <div class="form-control">
                 <label for="Email">Use Email </label>
-                <input type="text" id="useremail" placeholder="Enter Your Email" autocomplete="off" />
+                <input type="text" id="useremail" placeholder="Enter Your Email" autocomplete="off">
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -47,30 +47,40 @@
             <!-- User Phone Number -->
             <div class="form-control">
                 <label for="user Phone">Use Phone </label>
-                <input type="text" id="userphone" placeholder="Enter Your Phone Number" autocomplete="off" />
+                <input type="text" id="userphone" placeholder="Enter Your Phone Number" autocomplete="off">
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
             </div>
 
-                        <!-- Password -->
-                        <div class="form-control">
-                            <label for="Password">Password </label>
-                            <input type="password" id="userpassword" placeholder="Enter Your Password" autocomplete="off" />
-                            <i class="fas fa-check-circle"></i>
-                            <i class="fas fa-exclamation-circle"></i>
-                            <small>Error Message</small>
-                        </div>
-            
-                        <!-- Confirm Password -->
-                        <div class="form-control">
-                            <label for="confirm Password">Confirm Password </label>
-                            <input type="password" id="userconfirmpassword" placeholder="Confirm Password" autocomplete="off" />
-                            <i class="fas fa-check-circle"></i>
-                            <i class="fas fa-exclamation-circle"></i>
-                            <small>Error Message</small>
-                        </div>
-                        
+            <!-- Password -->
+            <div class="form-control">
+                <label for="Password">Password </label>
+                <input type="password" id="userpassword" placeholder="Enter Your Password" autocomplete="off">
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small>Error Message</small>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-control">
+                <label for="confirm Password">Confirm Password </label>
+                <input type="password" id="userconfirmpassword" placeholder="Confirm Password" autocomplete="off">
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small>Error Message</small>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-control" id="genderclass">
+                <label for="Gender" >Gender : </label>
+                <label for="Male"><input type="radio" name="gender" value="Male" id="Male">Male</label>
+                <label for="Female"><input type="radio" name="gender" value="Female" id="Female">Female</label>
+                <label for="Other"><input type="radio" name="gender" value="Other" id="Other">Other</label>
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small id="genderErr" >Error Message</small>
+            </div>
 
 
 
@@ -92,7 +102,7 @@
             </div>
 
             <!-- submit button -->
-            <input type="submit" id="submit" name="submit" class="btn" placeholder="submit" />
+            <input type="submit" id="submit" name="submit" class="btn" placeholder="submit">
 
         </form>
     </div>
@@ -102,7 +112,7 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script type="text/Javascript">
-        const submit = document.getElementById('submit');
+
         const form = document.getElementById('form');
         const name = document.getElementById('username');
         const email = document.getElementById('useremail');
@@ -111,8 +121,8 @@
         const password = document.getElementById('userpassword');
         const confirm = document.getElementById('userconfirmpassword');
 
-
-
+        const interest = document.getElementsByName('interest');
+        const gender = document.form.gender;
 
         //Define Validate Function
 
@@ -123,10 +133,13 @@
             const courseval = usercourse.value.trim();
             const passwordval = userpassword.value.trim();
             const confirmval = userconfirmpassword.value.trim();
-            
 
+            const genderval = document.form.gender.value;
+            const interest = document.getElementsByName('interest');
 
-            var nameErr = emailErr = phoneErr = courseErr = passwordErr = confirmErr =  true;
+            var gernderError = document.getElementById('genderErr');
+
+            var nameErr = emailErr = phoneErr = courseErr = passwordErr = confirmErr = genderErr = true;
 
             //validate username
 
@@ -186,8 +199,22 @@
             }else{
                 setSuccessMsg(confirm);
             }
-            
 
+            //validate Gender
+            if(genderval === ""){
+                //alert("Please Select Gender");
+                //This below line is use to change the innerhtml of the small tag under the radio buttons
+                document.getElementById("genderErr").innerHTML = "* Please select Gender!";
+                //thie following is use to set the error class of readio buttons
+                var elem  = document.getElementById("genderclass");
+                elem.classList.add("error");
+                genderErr = false;
+            }else{
+                document.getElementById("genderErr").innerHTML = "";
+                var a = document.getElementById("genderclass");
+                a.classList.remove("success");
+                genderErr = true;
+            }
 
                         //validate Course
             if(courseval === "" || courseval == 0){
@@ -198,8 +225,10 @@
             }
             
             //successMsg(nameval);
-            if( (nameErr && emailErr && phoneErr && courseErr && passwordErr && confirmErr ) == false){
+            if( (nameErr && emailErr && phoneErr && courseErr && passwordErr && confirmErr && genderErr) == false){
                 return false;
+            }else{
+                swal("Good job!" + nameval, "Registeration Successfull", "success");
             }
         };
 
@@ -249,9 +278,7 @@
         }
 
 
-    function myfunction(){
-        confirm("* Are you sure to save this record!");
-    }
+
     </script>
 </body>
 
