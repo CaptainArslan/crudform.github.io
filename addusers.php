@@ -1,19 +1,85 @@
+<?php
+include("database.php");
+$obj = new database();
+
+$id = $name = $email = $password = $confirm_pass = $phone = $address = $course = $gender = $disable  = " ";
+
+if (isset($_GET['id']) && $_GET['id'] != "") {
+    $id = $_GET['id'];
+    $result = $obj->select($id);
+    //print_r($result);
+    $name = $result['0']['user_firstname'];
+    $email = $result['0']['user_email'];
+    $password = $result['0']['user_password'];
+    $confirm_pass = $result['0']['user_confirm_pass'];
+    $phone = $result['0']['user_phone'];
+    $address = $result['0']['user_address'];
+    $course = $result['0']['user_status'];
+    $gender = $result['0']['user_gender'];
+    $disable = $result['0']['user_disable'];
+}
+
+
+if (isset($_POST['submit'])) {
+
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirm_pass = $_POST['confirm_pass'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $gender = $_POST['gender'];
+    $course = $_POST['course'];
+    $disable = $_POST['disable'];
+
+    $conditional_array = array(
+        'user_firstname' => $name, 'user_email' => $email, 'user_password' => $password,
+        'user_confirm_pass' => $confirm_pass, 'user_phone' => $phone, 'user_address' => $address,
+        'user_gender' => $gender, 'user_status' => $course, 'user_disable' => $disable
+    );
+
+    //print_r($conditional_array);
+    if ($id == " ") {
+
+        if ($obj->insert($conditional_array)) {
+            $_SESSION['message'] = "Record Inserted Successfully";
+            ?>
+                        <script>
+                            window.location.href = 'http://localhost/crudop/index.php';
+                        </script>
+            <?php
+        }else{
+            $_SESSION['message'] = "Error Occured While Data Insertion";
+        }
+    } else {
+        if ($obj->update($conditional_array, $id)) {
+            $_SESSION['message'] = "Record Updated Successfully";
+        } else {
+            $_SESSION['message'] = "Error Occured While Record Updation";
+        }
+    }
+}
+//to show records
+$result = $obj->select();
+// In Parameter there comes a id number
+// echo "<pre>";
+// print_r($result);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Registeration form</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
 
-    <link rel="stylesheet" href="css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
 
 </head>
 
@@ -25,11 +91,11 @@
 
         <!-- Call  Comfirm function here -->
 
-        <form class="form" action="" id="form" name="form" onsubmit=" return Validate()  ">
+        <form class="form" action="" id="form" name="form" method="POST" onsubmit=" return Validate()">
             <!-- User Name -->
             <div class="form-control">
                 <label for="user Name"> Name </label>
-                <input type="text" name="name" id="username" placeholder="Enter Your Full Name" autocomplete="off">
+                <input type="text" name="name" id="username" placeholder="Enter Your Full Name" autocomplete="off" value="<?php echo $name; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -38,16 +104,7 @@
             <!-- User Email -->
             <div class="form-control">
                 <label for="Email">Use Email </label>
-                <input type="text" id="useremail" placeholder="Enter Your Email" autocomplete="off">
-                <i class="fas fa-check-circle"></i>
-                <i class="fas fa-exclamation-circle"></i>
-                <small>Error Message</small>
-            </div>
-
-            <!-- User Phone Number -->
-            <div class="form-control">
-                <label for="user Phone">Use Phone </label>
-                <input type="text" id="userphone" placeholder="Enter Your Phone Number" autocomplete="off">
+                <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -56,7 +113,7 @@
             <!-- Password -->
             <div class="form-control">
                 <label for="Password">Password </label>
-                <input type="password" id="userpassword" placeholder="Enter Your Password" autocomplete="off">
+                <input type="password" id="userpassword" name="password" placeholder="Enter Your Password" autocomplete="off" value="<?php echo $password; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -65,23 +122,40 @@
             <!-- Confirm Password -->
             <div class="form-control">
                 <label for="confirm Password">Confirm Password </label>
-                <input type="password" id="userconfirmpassword" placeholder="Confirm Password" autocomplete="off">
+                <input type="password" id="userconfirmpassword" name="confirm_pass" placeholder="Confirm Password" autocomplete="off" value="<?php echo $confirm_pass; ?>" />
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small>Error Message</small>
+            </div>
+
+            <!-- User Phone Number -->
+            <div class="form-control">
+                <label for="user Phone">Use Phone </label>
+                <input type="number" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small>Error Message</small>
+            </div>
+
+            <!-- Address -->
+            <div class="form-control">
+                <label for="Address">Address</label>
+                <input type="text" id="address" name="address" placeholder="Enter Your Address" autocomplete="off" value="<?php echo $address; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
             </div>
 
             <!-- Gender -->
-            <div class="form-control" id="genderclass">
-                <label for="Gender" >Gender : </label>
-                <label for="Male"><input type="radio" name="gender" value="Male" id="Male">Male</label>
-                <label for="Female"><input type="radio" name="gender" value="Female" id="Female">Female</label>
-                <label for="Other"><input type="radio" name="gender" value="Other" id="Other">Other</label>
-                <i class="fas fa-check-circle"></i>
-                <i class="fas fa-exclamation-circle"></i>
-                <small id="genderErr" >Error Message</small>
+            <div class="form-control " id="genderclass">
+                <label for="Gender">Gender : </label>
+                <label for="Male"><input type="radio" name="gender" value="Male" id="Male" <?php if ($gender == 'Male' || $gender == 'male') echo 'Checked'; ?> />Male</label>
+                <label for="Female"><input type="radio" name="gender" value="Female" id="Female" <?php if ($gender == 'Female' || $gender == 'female') echo 'Checked'; ?> />Female</label>
+                <label for="Other"><input type="radio" name="gender" value="Other" id="Other" <?php if ($gender == 'Other' || $gender == 'other') echo 'Checked'; ?> />Other</label>
+                <i class="fas fa-check-circle gendererror"></i>
+                <i class="fas fa-exclamation-circle gendererror"></i>
+                <small id="genderErr">Error Message</small>
             </div>
-
 
 
             <!-- Course Select tag -->
@@ -90,20 +164,31 @@
                 <!-- <input type="text" id="username" placeholder="Enter Your Full Name"> -->
                 <select name="course" id="usercourse">
                     <option value="0">Select Course</option>
-                    <option value="1">HTML</option>
-                    <option value="2">CSS</option>
-                    <option value="3">JAVASCRIPT</option>
-                    <option value="4">MYSQL</option>
-                    <option value="5">PHP</option>
+                    <option value="HTML" <?php if ($course == 'HTML') echo 'Selected'; ?>>HTML</option>
+                    <option value="CSS" <?php if ($course == 'CSS') echo 'Selected'; ?>>CSS</option>
+                    <option value="JAVASCRIPT" <?php if ($course == 'JAVASCRIPT') echo 'Selected'; ?>>JAVASCRIPT</option>
+                    <option value="MYSQL" <?php if ($course == 'MYSQL') echo 'Selected'; ?>>MYSQL</option>
+                    <option value="PHP" <?php if ($course == 'PHP') echo 'Selected'; ?>>PHP</option>
                 </select>
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
             </div>
 
-            <!-- submit button -->
-            <input type="submit" id="submit" name="submit" class="btn" placeholder="submit">
+            <!-- Disable -->
+            <div class="form-control " id="genderclass">
+                <label for="disable">Disable : </label>
+                <label for="disable"><input type="checkbox" name="disable" value="disable" id="disable" <?php if ($disable == "disable") echo 'checked'; ?> /></label>
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small id="disableErr">Error Message</small>
+            </div>
 
+            <!-- submit button -->
+            <div class="btns">
+                <input type="submit" id="submit" name="submit" class="btn" placeholder="submit" />
+                <a href="index.php" class="btn">Back</a>
+            </div>
         </form>
     </div>
 
@@ -120,8 +205,9 @@
         const course = document.getElementById('usercourse');
         const password = document.getElementById('userpassword');
         const confirm = document.getElementById('userconfirmpassword');
+        const address = document.getElementById('address');
 
-        const interest = document.getElementsByName('interest');
+        const disable = document.form.disable;
         const gender = document.form.gender;
 
         //Define Validate Function
@@ -133,13 +219,13 @@
             const courseval = usercourse.value.trim();
             const passwordval = userpassword.value.trim();
             const confirmval = userconfirmpassword.value.trim();
+            const addressval = address.value.trim();
 
             const genderval = document.form.gender.value;
-            const interest = document.getElementsByName('interest');
+            const disableval = document.form.disable;
 
-            var gernderError = document.getElementById('genderErr');
 
-            var nameErr = emailErr = phoneErr = courseErr = passwordErr = confirmErr = genderErr = true;
+            var nameErr = emailErr = phoneErr = courseErr = passwordErr = confirmErr = addressErr = genderErr = disableErr = true;
 
             //validate username
 
@@ -199,6 +285,14 @@
             }else{
                 setSuccessMsg(confirm);
             }
+            
+            //validate Address
+            if(addressval === ""){
+                 setErrorMsg(address, "*Please Enter Your Address!");
+                 addressErr = false;
+            }else{
+                setSuccessMsg(address);
+            }
 
             //validate Gender
             if(genderval === ""){
@@ -212,11 +306,32 @@
             }else{
                 document.getElementById("genderErr").innerHTML = "";
                 var a = document.getElementById("genderclass");
-                a.classList.remove("success");
+                a.classList.remove("error");
+                a.classList.add("success");
                 genderErr = true;
             }
+            
+            
+// Validate Disable
+           // if(disableval === ""){
+           //alert("Please Select Gender");
+           //This below line is use to change the innerhtml of the small tag under the radio buttons
+           //   document.getElementById("disableErr").innerHTML = "* Please select Gender!";
+           //  thie following is use to set the error class of readio buttons
+           //   var elem  = document.getElementById("genderclass");
+           //  elem.classList.add("error");
+           //  genderErr = false;
+           //}else{
+           //     document.getElementById("genderErr").innerHTML = "";
+           //     var a = document.getElementById("genderclass");
+           //     a.classList.remove("error");
+           //     a.classList.add("success");
+           //     genderErr = true;
+           //  }
+            
+            
 
-                        //validate Course
+            //validate Course
             if(courseval === "" || courseval == 0){
                 setErrorMsg(course, "* You must have to Select one Course!");
                 courseErr = false;
@@ -225,7 +340,7 @@
             }
             
             //successMsg(nameval);
-            if( (nameErr && emailErr && phoneErr && courseErr && passwordErr && confirmErr && genderErr) == false){
+            if( (nameErr && emailErr && phoneErr && courseErr && passwordErr && confirmErr && addressErr && genderErr) == false){
                 return false;
             }else{
                 swal("Good job!" + nameval, "Registeration Successfull", "success");
