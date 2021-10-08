@@ -2,21 +2,30 @@
 include("database.php");
 $obj = new database();
 
-$id = $name = $email = $password = $confirm_pass = $phone = $address = $course = $gender = $disable  = " ";
+$id = "";
+$name = "";
+$email = "";
+$password = "";
+$confirm_pass = "";
+$phone = "";
+$address = "";
+$course = "";
+$gender = "";
+$disable  = "";
 
 if (isset($_GET['id']) && $_GET['id'] != "") {
     $id = $_GET['id'];
-    $result = $obj->select($id);
-    //print_r($result);
-    $name = $result['0']['user_firstname'];
-    $email = $result['0']['user_email'];
-    $password = $result['0']['user_password'];
-    $confirm_pass = $result['0']['user_confirm_pass'];
-    $phone = $result['0']['user_phone'];
-    $address = $result['0']['user_address'];
-    $course = $result['0']['user_status'];
-    $gender = $result['0']['user_gender'];
-    $disable = $result['0']['user_disable'];
+    $data = $obj->select($id);
+    //print_r($data);
+    $name = $data['0']['user_firstname'];
+    $email = $data['0']['user_email'];
+    $password = $data['0']['user_password'];
+    $confirm_pass = $data['0']['user_confirm_pass'];
+    $phone = $data['0']['user_phone'];
+    $address = $data['0']['user_address'];
+    $course = $data['0']['user_status'];
+    $gender = $data['0']['user_gender'];
+    $disable = $data['0']['user_disable'];
 }
 
 
@@ -32,31 +41,14 @@ if (isset($_POST['submit'])) {
     $course = $_POST['course'];
     $disable = $_POST['disable'];
 
-    $conditional_array = array(
-        'user_firstname' => $name, 'user_email' => $email, 'user_password' => $password,
-        'user_confirm_pass' => $confirm_pass, 'user_phone' => $phone, 'user_address' => $address,
-        'user_gender' => $gender, 'user_status' => $course, 'user_disable' => $disable
-    );
+    
+    $conditional_array = array('user_firstname'=>$name,'user_email'=>$email,'user_password'=>$password,'user_confirm_pass'=>$confirm_pass,'user_phone'=>$phone,'user_address'=>$address,'user_gender'=>$gender,'user_status'=>$course,'user_disable'=>$disable);
 
     //print_r($conditional_array);
-    if ($id == " ") {
-
-        if ($obj->insert($conditional_array)) {
-            $_SESSION['message'] = "Record Inserted Successfully";
-            ?>
-                        <script>
-                            window.location.href = 'http://localhost/crudop/index.php';
-                        </script>
-            <?php
-        }else{
-            $_SESSION['message'] = "Error Occured While Data Insertion";
-        }
+    if ($id == "") {
+        $obj->insert($conditional_array);
     } else {
-        if ($obj->update($conditional_array, $id)) {
-            $_SESSION['message'] = "Record Updated Successfully";
-        } else {
-            $_SESSION['message'] = "Error Occured While Record Updation";
-        }
+        $obj->update($conditional_array,$id);
     }
 }
 //to show records
@@ -113,7 +105,7 @@ $result = $obj->select();
             <!-- Password -->
             <div class="form-control">
                 <label for="Password">Password </label>
-                <input type="password" id="userpassword" name="password" placeholder="Enter Your Password" autocomplete="off" value="<?php echo $password; ?>" />
+                <input type="text" id="userpassword" name="password" placeholder="Enter Your Password" autocomplete="off" value="<?php echo $password; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -122,7 +114,7 @@ $result = $obj->select();
             <!-- Confirm Password -->
             <div class="form-control">
                 <label for="confirm Password">Confirm Password </label>
-                <input type="password" id="userconfirmpassword" name="confirm_pass" placeholder="Confirm Password" autocomplete="off" value="<?php echo $confirm_pass; ?>" />
+                <input type="text" id="userconfirmpassword" name="confirm_pass" placeholder="Confirm Password" autocomplete="off" value="<?php echo $confirm_pass; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -131,7 +123,7 @@ $result = $obj->select();
             <!-- User Phone Number -->
             <div class="form-control">
                 <label for="user Phone">Use Phone </label>
-                <input type="number" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
+                <input type="text" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -149,9 +141,9 @@ $result = $obj->select();
             <!-- Gender -->
             <div class="form-control " id="genderclass">
                 <label for="Gender">Gender : </label>
-                <label for="Male"><input type="radio" name="gender" value="Male" id="Male" <?php if ($gender == 'Male' || $gender == 'male') echo 'Checked'; ?> />Male</label>
-                <label for="Female"><input type="radio" name="gender" value="Female" id="Female" <?php if ($gender == 'Female' || $gender == 'female') echo 'Checked'; ?> />Female</label>
-                <label for="Other"><input type="radio" name="gender" value="Other" id="Other" <?php if ($gender == 'Other' || $gender == 'other') echo 'Checked'; ?> />Other</label>
+                <label for="Male"><input type="radio" name="gender" value="Male" id="Male" <?php if ($gender == ' Male ') echo 'Checked'; ?> />Male</label>
+                <label for="Female"><input type="radio" name="gender" value="Female" id="Female" <?php if ($gender == ' Female ' ) echo 'Checked'; ?> />Female</label>
+                <label for="Other"><input type="radio" name="gender" value="Other" id="Other" <?php if ($gender == ' Other ' ) echo 'Checked'; ?> />Other</label>
                 <i class="fas fa-check-circle gendererror"></i>
                 <i class="fas fa-exclamation-circle gendererror"></i>
                 <small id="genderErr">Error Message</small>
@@ -164,11 +156,11 @@ $result = $obj->select();
                 <!-- <input type="text" id="username" placeholder="Enter Your Full Name"> -->
                 <select name="course" id="usercourse">
                     <option value="0">Select Course</option>
-                    <option value="HTML" <?php if ($course == 'HTML') echo 'Selected'; ?>>HTML</option>
-                    <option value="CSS" <?php if ($course == 'CSS') echo 'Selected'; ?>>CSS</option>
-                    <option value="JAVASCRIPT" <?php if ($course == 'JAVASCRIPT') echo 'Selected'; ?>>JAVASCRIPT</option>
-                    <option value="MYSQL" <?php if ($course == 'MYSQL') echo 'Selected'; ?>>MYSQL</option>
-                    <option value="PHP" <?php if ($course == 'PHP') echo 'Selected'; ?>>PHP</option>
+                    <option value="HTML" <?php if ($course == 'HTML') echo 'selected'; ?> >HTML</option>
+                    <option value="CSS" <?php if ($course == 'CSS') echo 'selected'; ?> >CSS</option>
+                    <option value="JAVASCRIPT" <?php if ($course == 'JAVASCRIPT') echo 'selected'; ?> >JAVASCRIPT</option>
+                    <option value="MYSQL" <?php if ($course == 'MYSQL') echo 'selected'; ?> >MYSQL</option>
+                    <option value="PHP" <?php if ($course == 'PHP') echo 'selected'; ?> >PHP</option>
                 </select>
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
@@ -311,26 +303,6 @@ $result = $obj->select();
                 genderErr = true;
             }
             
-            
-// Validate Disable
-           // if(disableval === ""){
-           //alert("Please Select Gender");
-           //This below line is use to change the innerhtml of the small tag under the radio buttons
-           //   document.getElementById("disableErr").innerHTML = "* Please select Gender!";
-           //  thie following is use to set the error class of readio buttons
-           //   var elem  = document.getElementById("genderclass");
-           //  elem.classList.add("error");
-           //  genderErr = false;
-           //}else{
-           //     document.getElementById("genderErr").innerHTML = "";
-           //     var a = document.getElementById("genderclass");
-           //     a.classList.remove("error");
-           //     a.classList.add("success");
-           //     genderErr = true;
-           //  }
-            
-            
-
             //validate Course
             if(courseval === "" || courseval == 0){
                 setErrorMsg(course, "* You must have to Select one Course!");

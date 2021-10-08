@@ -28,10 +28,10 @@
         public function insert($params=array()){
                // print_r($params);
                 //here it gives us the error of array to strung error so we have to solve that first so for that we make "$table_column to implode" 
-                $table_column = implode(',' , array_keys($params));
-                $table_value = implode("','" ,$params);
+                $table_column = implode(',', array_keys($params));
+                $table_value = implode("','",$params);
                // echo $sql = "INSERT INTO $table($table_column) VALUES ('$table_value')";
-               echo $sql = "INSERT INTO tbl_userdata ($table_column) VALUES ('$table_value')";
+                $sql = "INSERT INTO tbl_userdata ($table_column) VALUES ('$table_value')";
                if($this->mysqli->query($sql)){
                     array_push($this->result, $this->mysqli->insert_id);
                     return true;
@@ -58,7 +58,7 @@
                 if($id != null){
                     $sql .=" WHERE `id` = $id "; 
                 }
-                echo $sql;
+                //echo $sql;
                 if($this->mysqli->query($sql)){
                      array_push($this->result, $this->mysqli->affected_rows);
                      return true;
@@ -75,7 +75,7 @@
         
          //for deletion from database
         public function delete($id){
-                $sql = " DELETE FROM `tbl_userdata` WHERE `id` = $id ";
+                $sql = " DELETE FROM `tbl_userdata` WHERE `id`=$id";
                 if($this->mysqli->query($sql)){
                      array_push($this->result, $this->mysqli->affected_rows);
                      return true;
@@ -89,10 +89,11 @@
         
          //for Selection or Fetch from database 
         public function select( $id = null ){
-             $sql = "SELECT * FROM tbl_userdata ";
+             $sql = "SELECT * FROM tbl_userdata";
              if($id != null){
-                $sql.="WHERE `id` = $id ";
+                $sql.=" WHERE `id`=$id";
              }
+             echo $sql;
             $data= $this->mysqli->query($sql);
                 //print_r($data);
                     if($data->num_rows > 0){

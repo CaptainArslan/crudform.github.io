@@ -7,8 +7,8 @@
   //  'user_gender'=> 'Feamle', 'user_status'=>'Javascript','user_disable'=>'');
   //   $obj->insert($conditional_array);
 
-    // echo "Insert Result is : ";
-    // print_r($obj-> getResult());
+  //   echo "Insert Result is : ";
+  //   print_r($obj-> getResult());
     
 
 
@@ -30,15 +30,16 @@
     // }
     
   //$obj = new database();
-  //$result=$obj->select('tbl_userdata');
-  //echo '<pre>';
-  //print_r($result);
+  $result=$obj->select(87);
+  echo '<pre>';
+  print_r($result);
   
 
 
   //Get Data of a record by this code
     //  if(isset($_GET['type']) && $_GET['type'] == 'edit'){
   //     $id =  $_GET['id'];
-  //      $obj->select($id);
+       echo $result = $obj->select();
+       print_r($result);
    // }
 ?>
