@@ -13,6 +13,20 @@ $course = "";
 $gender = "";
 $disable  = "";
 
+//Variables To show Erros
+$nameErr = "";
+$emailErr = "";
+$passwordErr = "";
+$confirmErr = "";
+$phoneErr = "";
+$addressErr = "";
+$courseErr = "";
+$genderErr = "";
+$disableErr  = "";
+
+//Variable to Prevent Form Submit
+$error = true;
+
 if (isset($_GET['id']) && $_GET['id'] != "") {
     $id = $_GET['id'];
     $data = $obj->select($id);
@@ -31,24 +45,164 @@ if (isset($_GET['id']) && $_GET['id'] != "") {
 
 if (isset($_POST['submit'])) {
 
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $confirm_pass = $_POST['confirm_pass'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];
-    $gender = $_POST['gender'];
-    $course = $_POST['course'];
-    $disable = $_POST['disable'];
+    if (empty($_POST['name'])) {
+        $nameErr = "* Please Enter Your Name!";
+        $error = false;
+    } else {
+        $name = test_input($_POST["name"]);
+        if (!preg_match("/^[a-zA-Z ]+$/", $name)) {
+            $nameErr = "* Only Letter, Words and white spaces are Allowed!";
+            $error = false;
+        } else if (strlen($name) <= 2) {
+            $nameErr = "* Name Must be greater than 3 Character!";
+            $error = false;
+        } else {
+            $name = test_input($_POST["name"]);
+            $error = true;
+        }
+    }
 
-    
-    $conditional_array = array('user_firstname'=>$name,'user_email'=>$email,'user_password'=>$password,'user_confirm_pass'=>$confirm_pass,'user_phone'=>$phone,'user_address'=>$address,'user_gender'=>$gender,'user_status'=>$course,'user_disable'=>$disable);
+    //PHP Email Validation
+    if (empty($_POST['email'])) {
+        $emailErr = "* Please Enter Your Email!";
+        $error = false;
+    } else {
+        $email = test_input($_POST["email"]);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "* Invalid Email Format";
+            $error = false;
+        } else {
+            $email = test_input($_POST["email"]);
+            $error = true;
+        }
+    }
+
+    //PHP Password Validation
+    if (empty($_POST['password'])) {
+        $passwordErr = "* Please Enter Password!";
+        $error = false;
+    } else {
+        $password = test_input($_POST["password"]);
+        if (strlen($password) <= 3) {
+            $passwordErr = "* Password Must be greater than 3!";
+            $error = false;
+        } else if (strlen($password) > 10) {
+            $passwordErr = "* Password Must be between 5 to 10 character!";
+            $error = false;
+        } else {
+            $password = test_input($_POST["password"]);
+            $error =  true;
+        }
+    }
+
+
+
+    //PHP Confirm Password Validation
+    if (empty($_POST['confirm_pass'])) {
+        $confirmErr = "* Please Confirm Your Password";
+        $error = false;
+    } else {
+        $confirm_pass = test_input($_POST["confirm_pass"]);
+        if ($password != $confirm_pass) {
+            $confirmErr = "* Password not Matched";
+            $error = false;
+        } else {
+            $confirm_pass = test_input($_POST["confirm_pass"]);
+            $error = true;
+        }
+    }
+
+    //PHP Phone Validation
+    if (empty($_POST['phone'])) {
+        $phoneErr = "* Please Enter Your Phone";
+        $error = false;
+    } else {
+        $phone = test_input($_POST['phone']);
+        if (strlen($phone) < 10) {
+            $phoneErr = "* Phone Must be greater than 11 Character";
+            $error = false;
+        } else {
+            $phone = test_input($_POST['phone']);
+            $error = true;
+        }
+    }
+
+    //PHP Address Validation
+    if (empty($_POST['address'])) {
+        $addressErr = "* Please Enter Your Phone";
+        $error = false;
+    } else {
+        $address = test_input($_POST['address']);
+        $error = true;
+    }
+
+
+    if (empty($_POST['gender'])) {
+        $genderErr = "* Please Select Gender";
+        $error = false;
+    } else {
+        $gender = test_input($_POST['gender']);
+    }
+
+    //PHP Course Validation
+    if (empty($_POST['course'])) {
+        $courseErr = "* Please Enter Gender";
+        $error = false;
+    } else {
+        $course = test_input($_POST['course']);
+        $error = true;
+    }
+
+
+    if (empty($_POST['disable'])) {
+        $disable = "active";
+    } else {
+        $disable = test_input($_POST['disable']);
+    }
+
+    $conditional_array = array('user_firstname' => $name, 'user_email' => $email, 'user_password' => $password, 'user_confirm_pass' => $confirm_pass, 'user_phone' => $phone, 'user_address' => $address, 'user_gender' => $gender, 'user_status' => $course, 'user_disable' => $disable);
 
     //print_r($conditional_array);
-    if ($id == "") {
-        $obj->insert($conditional_array);
-    } else {
-        $obj->update($conditional_array,$id);
+    if ($error == true) {
+        if ($id == "") {
+            $insert =  $obj->insert($conditional_array);
+
+            if ($insert) {
+    ?>
+                <script>
+                    alert("Data Inserted");
+                    $_SESSION['message'] = " Record Inserted Successfully ";
+                </script>
+            <?php
+            }
+            ?>
+            <script>
+                window.location.href = "http://localhost/crudop/index.php";
+            </script>
+            <?php
+        } else {
+            $update = $obj->update($conditional_array, $id);
+            if ($update) {
+            ?>
+                <script>
+                    alert("Data Updated");
+                    $_SESSION['message'] = " Record Inserted Successfully ";
+                </script>
+            <?php
+            } else {
+            ?>
+                <script>
+                    alert("Error Occured While Updating Record");
+                </script>
+            <?php
+            }
+
+            ?>
+            <script>
+                window.location.href = "http://localhost/crudop/index.php";
+            </script>
+<?php
+        }
     }
 }
 //to show records
@@ -56,6 +210,14 @@ $result = $obj->select();
 // In Parameter there comes a id number
 // echo "<pre>";
 // print_r($result);
+
+function test_input($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
 
 ?>
 <!DOCTYPE html>
@@ -69,10 +231,15 @@ $result = $obj->select();
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
-
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <link rel="stylesheet" href="css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
-
+    <script>
+        function myfunction() {
+            if (confirm("Please confirm!")) return true;
+            else return false;
+        }
+    </script>
 </head>
 
 <body>
@@ -83,7 +250,7 @@ $result = $obj->select();
 
         <!-- Call  Comfirm function here -->
 
-        <form class="form" action="" id="form" name="form" method="POST" onsubmit=" return Validate()">
+        <form class="form" action="" id="form" name="form" method="POST" onsubmit="return Validate() ">
             <!-- User Name -->
             <div class="form-control">
                 <label for="user Name"> Name </label>
@@ -91,15 +258,17 @@ $result = $obj->select();
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
+                <span style="float: right; color: red;"><?php echo $nameErr; ?></span>
             </div>
 
             <!-- User Email -->
             <div class="form-control">
-                <label for="Email">Use Email </label>
+                <label for="Email">Email </label>
                 <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
+                <span style="float: right; color: red;"><?php echo $emailErr; ?></span>
             </div>
 
             <!-- Password -->
@@ -108,7 +277,12 @@ $result = $obj->select();
                 <input type="text" id="userpassword" name="password" placeholder="Enter Your Password" autocomplete="off" value="<?php echo $password; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
+                <div>
+                    <i class="fas fa-eye"></i>
+                    <i class="fas fa-eye-slash"></i>
+                </div>
                 <small>Error Message</small>
+                <span style="float: right; color: red;"><?php echo $passwordErr; ?></span>
             </div>
 
             <!-- Confirm Password -->
@@ -118,15 +292,17 @@ $result = $obj->select();
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
+                <span style="float: right; color: red;"><?php echo $confirmErr; ?></span>
             </div>
 
             <!-- User Phone Number -->
             <div class="form-control">
                 <label for="user Phone">Use Phone </label>
-                <input type="text" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
+                <input type="number" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
+                <span style="float: right; color: red;"><?php echo $phoneErr; ?></span>
             </div>
 
             <!-- Address -->
@@ -136,17 +312,19 @@ $result = $obj->select();
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
+                <span style="float: right; color: red;"><?php echo $addressErr; ?></span>
             </div>
 
             <!-- Gender -->
             <div class="form-control " id="genderclass">
                 <label for="Gender">Gender : </label>
-                <label for="Male"><input type="radio" name="gender" value="Male" id="Male" <?php if ($gender == ' Male ') echo 'Checked'; ?> />Male</label>
-                <label for="Female"><input type="radio" name="gender" value="Female" id="Female" <?php if ($gender == ' Female ' ) echo 'Checked'; ?> />Female</label>
-                <label for="Other"><input type="radio" name="gender" value="Other" id="Other" <?php if ($gender == ' Other ' ) echo 'Checked'; ?> />Other</label>
+                <label for="Male"><input type="radio" name="gender" value="Male" id="Male" <?php if ($gender == 'Male') echo 'Checked'; ?> />Male</label>
+                <label for="Female"><input type="radio" name="gender" value="Female" id="Female" <?php if ($gender == 'Female') echo 'Checked'; ?> />Female</label>
+                <label for="Other"><input type="radio" name="gender" value="Other" id="Other" <?php if ($gender == 'Other') echo 'Checked'; ?> />Other</label>
                 <i class="fas fa-check-circle gendererror"></i>
                 <i class="fas fa-exclamation-circle gendererror"></i>
                 <small id="genderErr">Error Message</small>
+                <span style=" color: red;"><?php echo $genderErr; ?></span>
             </div>
 
 
@@ -156,15 +334,16 @@ $result = $obj->select();
                 <!-- <input type="text" id="username" placeholder="Enter Your Full Name"> -->
                 <select name="course" id="usercourse">
                     <option value="0">Select Course</option>
-                    <option value="HTML" <?php if ($course == 'HTML') echo 'selected'; ?> >HTML</option>
-                    <option value="CSS" <?php if ($course == 'CSS') echo 'selected'; ?> >CSS</option>
-                    <option value="JAVASCRIPT" <?php if ($course == 'JAVASCRIPT') echo 'selected'; ?> >JAVASCRIPT</option>
-                    <option value="MYSQL" <?php if ($course == 'MYSQL') echo 'selected'; ?> >MYSQL</option>
-                    <option value="PHP" <?php if ($course == 'PHP') echo 'selected'; ?> >PHP</option>
+                    <option value="HTML" <?php if ($course == 'HTML') echo 'selected'; ?>>HTML</option>
+                    <option value="CSS" <?php if ($course == 'CSS') echo 'selected'; ?>>CSS</option>
+                    <option value="JAVASCRIPT" <?php if ($course == 'JAVASCRIPT') echo 'selected'; ?>>JAVASCRIPT</option>
+                    <option value="MYSQL" <?php if ($course == 'MYSQL') echo 'selected'; ?>>MYSQL</option>
+                    <option value="PHP" <?php if ($course == 'PHP') echo 'selected'; ?>>PHP</option>
                 </select>
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
+                <span style="float: right; color: red;"><?php echo $courseErr; ?></span>
             </div>
 
             <!-- Disable -->
@@ -178,7 +357,8 @@ $result = $obj->select();
 
             <!-- submit button -->
             <div class="btns">
-                <input type="submit" id="submit" name="submit" class="btn" placeholder="submit" />
+                <!--<input type="submit" id="submit" name="submit" class="btn" placeholder="submit" onclick="return confirm('Are you sure?')" />-->
+                <button type="submit" id="submit" name="submit" class="btn submit_btn" onclick=" return myfunction()">Submit</button>
                 <a href="index.php" class="btn">Back</a>
             </div>
         </form>
@@ -187,7 +367,6 @@ $result = $obj->select();
 
     <!-- Javascript -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
     <script type="text/Javascript">
 
         const form = document.getElementById('form');

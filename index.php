@@ -90,7 +90,8 @@ if (isset($_SESSION['message'])) {
                                             <a href="addusers.php?id=<?php echo $list['id']; ?>" class="btn btn-primary">Edit</a>
                                         </td>
                                         <td>
-                                            <a href="index.php?type=delete&delid=<?php echo $list['id']; ?> " class="btn btn-danger">Delete</a>
+                                            <a href="index.php?type=delete&delid=<?php echo $list['id']; ?> " class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                                            <!-- <button type="button" value="<?php echo $list['id']; ?> " class=" delet_confirm btn btn-danger">Delete</button> -->
                                         </td>
                                     </tr>
 

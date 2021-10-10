@@ -14,7 +14,7 @@ body{
     background: none;
     background-size: 100%;
     background-repeat: no-repeat;
-    display: fleX;
+    display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
@@ -54,6 +54,7 @@ body{
     display: inline-block;
     margin-bottom: 5px;
     font-weight: bold;
+    cursor: pointer;
 }
 .form-control input[type=text],input[type=email],input[type=number],input[type=password],select{
     width: 100%;
@@ -116,12 +117,17 @@ body{
     color: #2ecc71;
     visibility: hidden;
 }
+.form-control .gendererror{
+    top: 5px;
+}
+
 
 
 
 
 
 .form .btn{
+    flex-basis: 40%;
     background: var(--lg-lightcolor); 
     border-radius: 6px;
     border: none;
@@ -130,14 +136,25 @@ body{
     font-size: 16px;
     padding: 15px 0 ;
     margin-top: 20px;
-    width: 100%;
+    width: 50%;
     font-weight: bold;
     text-transform: uppercase;
     transition: all 1s ease;
 }
+.btns{
+    display: flex;
+    justify-content: space-around;
+}
+.form a{
+    text-align: center;
+    text-decoration: none;
+    color: #222;
+}
+
 .form .btn:hover{
     background:  linear-gradient(to right, #74ebd5, #9face6)
 }
+
 
 @media(max-width:998px){
     .container{
