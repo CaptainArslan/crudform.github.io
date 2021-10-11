@@ -1,4 +1,5 @@
 <?php
+session_start();
 include("database.php");
 $obj = new database();
 
@@ -24,6 +25,14 @@ $courseErr = "";
 $genderErr = "";
 $disableErr  = "";
 
+$emailcheck = "";
+
+if(isset($_POST['email']))
+{
+    $emailcheck = $_POST['email'];
+    $emaildata = $obj->selectemail($emailcheck);
+    $emailcheckdata = $emaildata['0']['user_email'];
+}
 //Variable to Prevent Form Submit
 $error = true;
 
@@ -171,13 +180,13 @@ if (isset($_POST['submit'])) {
     ?>
                 <script>
                     alert("Data Inserted");
-                    $_SESSION['message'] = " Record Inserted Successfully ";
+                   <?php $_SESSION['message'] = " Record Inserted Successfully ";?>
                 </script>
             <?php
             }
             ?>
             <script>
-                window.location.href = "http://localhost/crudop/index.php";
+               window.location.href = "http://localhost/crudop/index.php";
             </script>
             <?php
         } else {
@@ -186,7 +195,7 @@ if (isset($_POST['submit'])) {
             ?>
                 <script>
                     alert("Data Updated");
-                    $_SESSION['message'] = " Record Inserted Successfully ";
+                   <?php $_SESSION['message'] = " Record Inserted Successfully ";?>
                 </script>
             <?php
             } else {
@@ -199,7 +208,7 @@ if (isset($_POST['submit'])) {
 
             ?>
             <script>
-                window.location.href = "http://localhost/crudop/index.php";
+               window.location.href = "http://localhost/crudop/index.php";
             </script>
 <?php
         }
@@ -231,15 +240,10 @@ function test_input($data)
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    
     <link rel="stylesheet" href="css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
-    <script>
-        function myfunction() {
-            if (confirm("Please confirm!")) return true;
-            else return false;
-        }
-    </script>
+
 </head>
 
 <body>
@@ -264,11 +268,11 @@ function test_input($data)
             <!-- User Email -->
             <div class="form-control">
                 <label for="Email">Email </label>
-                <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" />
+                <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" oninput="checkemail()"/>
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
-                <span style="float: right; color: red;"><?php echo $emailErr; ?></span>
+                <span style="float: right; color: red;" id="emailErr"><?php echo $emailErr; ?></span>
             </div>
 
             <!-- Password -->
@@ -298,11 +302,11 @@ function test_input($data)
             <!-- User Phone Number -->
             <div class="form-control">
                 <label for="user Phone">Use Phone </label>
-                <input type="number" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
+                <input type="number" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>"  oninput="checkphone()"/>
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
-                <span style="float: right; color: red;"><?php echo $phoneErr; ?></span>
+                <span style="float: right; color: red;" id="phoneErr"><?php echo $phoneErr; ?></span>
             </div>
 
             <!-- Address -->
@@ -358,7 +362,7 @@ function test_input($data)
             <!-- submit button -->
             <div class="btns">
                 <!--<input type="submit" id="submit" name="submit" class="btn" placeholder="submit" onclick="return confirm('Are you sure?')" />-->
-                <button type="submit" id="submit" name="submit" class="btn submit_btn" onclick=" return myfunction()">Submit</button>
+                <button type="submit" id="submit" name="submit" class="btn submit_btn" onclick="return confirm('Are you sure?')" >Submit</button>
                 <a href="index.php" class="btn">Back</a>
             </div>
         </form>
@@ -367,7 +371,35 @@ function test_input($data)
 
     <!-- Javascript -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script type="text/Javascript">
+
+    function checkemail() { 
+        $.ajax({
+            type: "POST",
+            url: "checking.php",
+            data: 'email='+$("#useremail").val(),
+            success: function (data) {
+                $('#emailErr').html(data);
+            },error:function(){
+                $('#submit').prop('disables', false);
+            }
+        });
+    }
+
+
+    function checkphone() { 
+        $.ajax({
+            type: "POST",
+            url: "checking.php",
+            data: 'phone='+$("#userphone").val(),
+            success: function (data) {
+                $('#phoneErr').html(data);
+            },error:function(){
+                $('#submit').prop('disables', false);
+            }
+        });
+    }
 
         const form = document.getElementById('form');
         const name = document.getElementById('username');

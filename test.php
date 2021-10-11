@@ -30,7 +30,13 @@
     // }
     
   //$obj = new database();
-  $result=$obj->select(87);
+  // $result=$obj->selectemail('muskan@gmail.com');
+  // echo '<pre>';
+  // print_r($result);
+
+
+
+  $result=$obj->selectphone('03177638978');
   echo '<pre>';
   print_r($result);
   
@@ -39,7 +45,7 @@
   //Get Data of a record by this code
     //  if(isset($_GET['type']) && $_GET['type'] == 'edit'){
   //     $id =  $_GET['id'];
-       echo $result = $obj->select();
-       print_r($result);
+      //  echo $result = $obj->select();
+      //  print_r($result);
    // }
 ?>
