@@ -362,7 +362,7 @@ function test_input($data)
             <!-- submit button -->
             <div class="btns">
                 <!--<input type="submit" id="submit" name="submit" class="btn" placeholder="submit" onclick="return confirm('Are you sure?')" />-->
-                <button type="submit" id="submit" name="submit" class="btn submit_btn" onclick="return confirm('Are you sure?')" >Submit</button>
+                <button type="submit" id="submit" name="submit" class="btn submit_btn">Submit</button>
                 <a href="index.php" class="btn">Back</a>
             </div>
         </form>
