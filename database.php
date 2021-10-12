@@ -90,6 +90,20 @@ class database
     }
 
 
+        //for Multiple deletion from database
+        public function deletemultiple($ids)
+        {
+            $sql = " DELETE FROM `tbl_userdata` WHERE `id` IN($ids)";
+            if ($this->mysqli->query($sql)) {
+                array_push($this->result, $this->mysqli->affected_rows);
+                return true;
+            } else {
+                array_push($this->result, $this->mysqli->error);
+                return false;
+            }
+        }
+
+
 
     //for Selection or Fetch from database 
     public function select($id = null, $email = null)
@@ -124,7 +138,7 @@ class database
                 if ($data->num_rows > 0) {
                     echo "<span> * Email Already Taken! </span>";
                     echo "<script> $('#submit').attr('disabled', true); </script>";
-                    return false;
+                    return $data;
                 }else{
                     echo "<span color:green> * Email Available </span>";
                 }
@@ -141,6 +155,7 @@ class database
                         if ($data->num_rows > 0) {
                             echo "<span> * Phone Already Taken! </span>";
                             echo "<script> $('#submit').attr('disabled', true); </script>";
+                            return $data;
                         }else{
                             echo "<span>* Phone Available </span>";
                             echo "<script> $('#submit').attr('disabled', false); </script>";
