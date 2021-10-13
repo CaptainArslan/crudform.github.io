@@ -66,7 +66,8 @@ class database
         if ($this->mysqli->query($sql)) {
             array_push($this->result, $this->mysqli->affected_rows);
             return true;
-        } else {
+        } 
+        else {
             array_push($this->result, $this->mysqli->error);
             return false;
         }
@@ -88,9 +89,8 @@ class database
             return false;
         }
     }
-
-
-        //for Multiple deletion from database
+    
+    //for Multiple deletion from database
         public function deletemultiple($ids)
         {
             $sql = " DELETE FROM `tbl_userdata` WHERE `id` IN($ids)";
@@ -105,8 +105,8 @@ class database
 
 
 
-    //for Selection or Fetch from database 
-    public function select($id = null, $email = null)
+    //for Selection total  from database 
+    public function select($id = null)
     {
         $sql = "SELECT * FROM tbl_userdata";
         if ($id != null) {
@@ -136,31 +136,50 @@ class database
             //print_r($data);
                 //$alldata[] = $row;
                 if ($data->num_rows > 0) {
-                    echo "<span> * Email Already Taken! </span>";
+                    echo "* Email Already Taken!";
                     echo "<script> $('#submit').attr('disabled', true); </script>";
-                    return $data;
                 }else{
-                    echo "<span color:green> * Email Available </span>";
+                    //echo "";
+                    echo "<script> $('#submit').attr('disabled', false); </script>";
                 }
         }
 
-                //for Selection or Fetch phone from database 
-                public function selectphone($phone = null)
-                {
-                    $sql = "SELECT * FROM tbl_userdata WHERE user_phone = $phone";
-                    //echo $sql;
-                    $data = $this->mysqli->query($sql);
-                    //print_r($data);
-                        //$alldata[] = $row;
-                        if ($data->num_rows > 0) {
-                            echo "<span> * Phone Already Taken! </span>";
-                            echo "<script> $('#submit').attr('disabled', true); </script>";
-                            return $data;
-                        }else{
-                            echo "<span>* Phone Available </span>";
-                            echo "<script> $('#submit').attr('disabled', false); </script>";
+            //for Selection or Fetch email from database 
+        public function duplication($email)
+        {
+            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
+            //echo $sql;
+            $data = $this->mysqli->query($sql);
+            //print_r($data);
+                //$alldata[] = $row;
+                if ($data->num_rows > 0) {
+                    $alldata = array();
+                        while ($row = $data->fetch_assoc()) {
+                            $alldata[] = $row;
                         }
+                        return $alldata;
+                }else{
+                    //echo "";
+                    echo "<script> $('#submit').attr('disabled', false); </script>";
                 }
+        }
+
+        //for Selection or Fetch phone from database 
+        public function selectphone($phone = null)
+        {
+            $sql = "SELECT * FROM tbl_userdata WHERE user_phone = '$phone'";
+            //echo $sql;
+            $data = $this->mysqli->query($sql);
+            //print_r($data);
+                //$alldata[] = $row;
+                if ($data->num_rows > 0 ) {
+                    //echo " * Phone Already Taken!";
+                    //echo "<script> $('#submit').attr('disabled', true); </script>";
+                }else{
+                    //echo "<span>* Phone Available </span>";
+                    //echo "<script> $('#submit').attr('disabled', false); </script>";
+                }
+        }
 
 
     public function getResult()

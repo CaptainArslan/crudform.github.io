@@ -25,15 +25,6 @@ $courseErr = "";
 $genderErr = "";
 $disableErr  = "";
 
-$emailcheck = "";
-
-if (isset($_POST['email'])) {
-    $emailcheck = $_POST['email'];
-    $emaildata = $obj->selectemail($emailcheck);
-    $emailcheckdata = $emaildata['0']['user_email'];
-}
-//Variable to Prevent Form Submit
-$error = true;
 
 if (isset($_GET['id']) && $_GET['id'] != "") {
     $id = $_GET['id'];
@@ -160,10 +151,10 @@ if (isset($_POST['submit'])) {
         $course = test_input($_POST['course']);
         $error = true;
     }
-
-
+    
+    //PHP Disable check
     if (empty($_POST['disable'])) {
-        $disable = "active";
+        $disable = "";
     } else {
         $disable = test_input($_POST['disable']);
     }
@@ -173,43 +164,49 @@ if (isset($_POST['submit'])) {
     //print_r($conditional_array);
     if ($error == true) {
         if ($id == "") {
-            $insert =  $obj->insert($conditional_array);
-
-            if ($insert) {
-?>
-                <script>
-                    alert("Data Inserted");
-                    <?php $_SESSION['message'] = " Record Inserted Successfully "; ?>
-                </script>
-            <?php
+            
+            $emailcheck = $obj->duplication($email);
+            if($emailcheck > 0){
+                $emailErr = "* Email Already present PHP!";
             }
-            ?>
-            <script>
-                window.location.href = "http://localhost/crudop/index.php";
-            </script>
-            <?php
+            else{
+                $insert =  $obj->insert($conditional_array);
+                if ($insert) {
+                        ?>
+                            <script>
+                                alert("Data Inserted");
+                                <?php $_SESSION['message'] = " Record Inserted Successfully ";?>
+                            </script>
+                        <?php
+                    }
+                        ?>
+                        <script>
+                                   window.location.href = "http://localhost/crudop/index.php";
+                        </script>
+                    <?php
+            }
         } else {
-            $update = $obj->update($conditional_array, $id);
-            if ($update) {
-            ?>
+                $update = $obj->update($conditional_array, $id);
+                if ($update) {
+                ?>
+                    <script>
+                        alert("Data Updated");
+                       <?php $_SESSION['message'] = " Record Updated Successfully ";?>
+                    </script>
+                <?php
+                } else {
+                ?>
+                    <script>
+                        alert("Error Occured While Updating Record");
+                    </script>
+                <?php
+                }
+    
+                ?>
                 <script>
-                    alert("Data Updated");
-                    <?php $_SESSION['message'] = " Record Updated Successfully "; ?>
+                   window.location.href = "http://localhost/crudop/index.php";
                 </script>
-            <?php
-            } else {
-            ?>
-                <script>
-                    alert("Error Occured While Updating Record");
-                </script>
-            <?php
-            }
-
-            ?>
-            <script>
-                window.location.href = "http://localhost/crudop/index.php";
-            </script>
-<?php
+                <?php 
         }
     }
 }
@@ -239,21 +236,20 @@ function test_input($data)
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
-
     <link rel="stylesheet" href="css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
-
 </head>
 
 <body>
+
     <div class="container">
         <div class="header">
-            <h2>Registeration Form</h2>
+            <h2> Manage Registeration Form</h2>
         </div>
 
         <!-- Call  Comfirm function here -->
 
-        <form class="form" action="" id="form" name="form" method="POST" onsubmit=" return confirm('Are you sure?') ">
+        <form class="form" action="" id="form" name="form" method="POST" onsubmit="return confirm('* Are you sure to do this action!')">
             <!-- User Name -->
             <div class="form-control">
                 <label for="user Name"> Name </label>
@@ -267,7 +263,8 @@ function test_input($data)
             <!-- User Email -->
             <div class="form-control">
                 <label for="Email">Email </label>
-                <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" oninput="checkemail()" />
+                 <input type="hidden" name="email_check" id="useremail_check" value="<?php echo $email; ?>"/>
+                <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -276,6 +273,7 @@ function test_input($data)
 
             <!-- Password -->
             <div class="form-control">
+            
                 <label for="Password">Password </label>
                 <input type="password" id="userpassword" name="password" placeholder="Enter Your Password" autocomplete="off" value="<?php echo $password; ?>" />
                 <i class="fas fa-check-circle"></i>
@@ -290,25 +288,22 @@ function test_input($data)
 
             <!-- Confirm Password -->
             <div class="form-control">
-                <label for="confirm Password">Confirm Password </label>
-                <input type="password" id="userconfirmpassword" name="confirm_pass" placeholder="Confirm Password" autocomplete="off" value="<?php echo $confirm_pass; ?>" />
+                <label for="Verify Password">Confirm Password </label>
+                <input type="password" id="Cpass" name="confirm_pass" placeholder="Password" autocomplete="off" value="<?php echo $confirm_pass; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <div class="password_icon">
-                    <i class="fas fa-eye"></i>
-                    <i class="fas fa-eye-slash"></i>
-                </div>
                 <small>Error Message</small>
                 <span style="float: right; color: red;"><?php echo $confirmErr; ?></span>
             </div>
-            <!-- Show password -->
-            <div style="cursor: pointer;">
-                <label for="showpass">Show Password<input type="checkbox" name="showpass" value="showpass" id="showpass" /></label>
+                
+            <div class="form-control">
+                <label for="ShowPassword"> Show Password <input type="checkbox" id="ShowPassword" onclick="showPassword()" /></label>
             </div>
+            
             <!-- User Phone Number -->
             <div class="form-control">
                 <label for="user Phone">Use Phone </label>
-                <input type="number" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" oninput="checkphone()" />
+                <input type="number" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -367,8 +362,25 @@ function test_input($data)
 
             <!-- submit button -->
             <div class="btns">
-                <!--<input type="submit" id="submit" name="submit" class="btn" placeholder="submit" onclick="return confirm('Are you sure?')" />-->
-                <button type="submit" id="submit" name="submit" class="btn submit_btn" onclick="return Validate()">Submit</button>
+            <?php 
+                if(isset($_GET['id']) && $_GET['id'] != ""){
+                    $update_data = $obj->select($id);
+                    if($update_data){
+                        ?><input type="submit" id="submit" name="submit" class="btn" placeholder="Update" value="Update" onclick="return Validate()" /><?php
+                    }else{
+                        ?>
+                            <script>
+                                alert("Invalid Entry");
+                                window.location.href = "http://127.0.0.1:8080/crudop//addusers.php";
+                            </script>
+                        <?php
+                    }
+                    
+                }else{
+                    ?><input type="submit" id="submit" name="submit" class="btn" placeholder="submit" value="Submit" onclick="return Validate()" /><?php
+                }
+            ?>
+                <!--<button id="submit" name="submit" class="btn submit_btn">Submit</button>-->
                 <a href="index.php" class="btn">Back</a>
             </div>
         </form>
@@ -378,35 +390,52 @@ function test_input($data)
     <!-- Javascript -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    
     <script type="text/Javascript">
-
-
-        function checkemail() { 
-        $.ajax({
-            type: "POST",
-            url: "checking.php",
-            data: 'email='+$("#useremail").val(),
-            success: function (data) {+
-                $('#emailErr').html(data);
-            },error:function(){
-                $('#submit').prop('disables', false);
-            }
-        });
+    
+    
+    function showPassword()
+    {
+        var x = document.getElementById('userpassword');
+        var y = document.getElementById('Cpass');
+        console.log()
+          if (x.type === "password" || y.type === "password") {
+            x.type = "text";
+            y.type = "text"
+          } else {
+            x.type = "password";
+            y.type = "Password"
+          }
     }
-
-
-    function checkphone() { 
-        $.ajax({
-            type: "POST",
-            url: "checking.php",
-            data: 'phone='+$("#userphone").val(),
-            success: function (data) {
-                $('#phoneErr').html(data);
-            },error:function(){
-                $('#submit').prop('disables', false);
-            }
+    
+    
+        $(document).ready(function(){
+            $('#useremail').blur(function(){
+                var email = $('#useremail').val();
+                var email_hidden_check = $('#useremail_check').val();
+                //to check the values of the variables
+                console.log(email_hidden_check);
+                console.log(email);
+                if(email != email_hidden_check){
+                    $.ajax({
+                        type: "POST",
+                        url: "checking.php",
+                        data: 'email='+email,
+                        success: function (data) {
+                            $('#emailErr').html(data);
+                        },error:function(){
+                        }
+                    });
+                    
+                }else{
+                    $('#emailErr').html("");
+                    $('#submit').attr('disabled', false);
+                }
+                
+                
+            });
         });
-    }
+        
 
         const form = document.getElementById('form');
         const name = document.getElementById('username');
@@ -414,23 +443,20 @@ function test_input($data)
         const phone = document.getElementById('userphone');
         const course = document.getElementById('usercourse');
         const password = document.getElementById('userpassword');
-        const confirm_check = document.getElementById('userconfirmpassword');
+        const confirm_pass = document.getElementById('Cpass');
         const address = document.getElementById('address');
-
-
 
         const disable = document.form.disable;
         const gender = document.form.gender;
 
         //Define Validate Function
-
         function Validate() {
             const nameval= username.value.trim();
             const emailval = useremail.value.trim();
             const phoneval = userphone.value.trim();
             const courseval = usercourse.value.trim();
             const passwordval = userpassword.value.trim();
-            const confirmval = userconfirmpassword.value.trim();
+            const confirmval = Cpass.value.trim();
             const addressval = address.value.trim();
 
             const genderval = document.form.gender.value;
@@ -459,7 +485,7 @@ function test_input($data)
                 setErrorMsg(email, "* Email Cant be blank!");
                 emailErr = false;
             }else if(!isEmail(emailval)){
-                setErrorMsg(email, "* Invali Email! ");
+                setErrorMsg(email, "* Invalid Email! ");
                 emailErr = false;
             }else{
                 setSuccessMsg(email);
@@ -470,7 +496,7 @@ function test_input($data)
                 setErrorMsg(phone, "* Phone Can't be blank!");
                 phoneErr = false;
             }else if(!isPhone(phoneval)){
-                setErrorMsg(phone, "* Phone number length must be 10 digits and only numbers a re allowed");
+                setErrorMsg(phone, "* Phone number length must be 11 digits and only numbers a re allowed");
                 phoneErr = false;
             }else{
                 setSuccessMsg(phone);
@@ -489,13 +515,13 @@ function test_input($data)
 
             //validate Confirm password
             if(confirmval === ""){
-                setErrorMsg(confirm_check, "*Confirm Password Can't be blank!");
+                setErrorMsg(confirm_pass, "*Confirm Password Can't be blank!");
                 confirmErr = false;
             }else if(confirmval != passwordval){
-                setErrorMsg(confirm_check, "* Password Does not matched");
+                setErrorMsg(confirm_pass, "* Password Does not matched");
                 confirmErr = false;
             }else{
-                setSuccessMsg(confirm_check);
+                setSuccessMsg(confirm_pass);
             }
             
             //validate Address
@@ -535,7 +561,7 @@ function test_input($data)
             if( (nameErr && emailErr && phoneErr && courseErr && passwordErr && confirmErr && addressErr && genderErr) == false){
                 return false;
             }else{
-                //swal("Good job!" + nameval, "Registeration Successfull", "success");
+                //swal("Good job!" + nameval, "All form is Validate", "success");
             }
         };
 

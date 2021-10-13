@@ -10,6 +10,7 @@ $obj = new database();
 
 if (isset($_GET['type']) && $_GET['type'] == 'delete') {
     $id =  $_GET['delid'];
+    
     if ($obj->delete($id)) {
         $_SESSION['message'] = " Record Deleted Successfully ";
     } else {
@@ -18,15 +19,20 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
 }
 
 if (isset($_POST['delete_selected'])) {
-    $delete_value = $_POST['myCheck'];
-    $ids = implode(",", $delete_value);
-
-    if ($obj->deletemultiple($ids)) {
-        $_SESSION['message'] = " Record Deleted Successfully if id's $ids;";
-    } else {
-        $_SESSION['message'] = " Error Occured While Record Deltion $ids";
+    
+    if(isset($_POST['myCheck']) && $_POST['myCheck'] != "" ){
+        $delete_value = $_POST['myCheck'];
+        $ids = implode(",", $delete_value);
+        if ($obj->deletemultiple($ids)) {
+            $_SESSION['message'] = "* Record Deleted Successfully where id's $ids;";
+       } else {
+            $_SESSION['message'] = "* Error Occured While Record Deltion $ids";
+       }
+    }else{
+        $_SESSION['message'] = "* Please Select a Record to Delete!";
     }
 }
+
 
 //To Following line of code is used to Show All Data
 $result = $obj->select();
@@ -81,10 +87,10 @@ $result = $obj->select();
     <?php
     if (isset($_SESSION['message'])) {
     ?>
-        <div class="container">
+        <div class="container ">
             <div class="row">
-                <div class="col-md-12 mt-5">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <div class="col-md-12 mt-3">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <strong><?php echo $_SESSION['message'];
                                 unset($_SESSION['message']); ?></strong>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -97,7 +103,7 @@ $result = $obj->select();
 
     <div class="container mb-5">
         <div class="row">
-            <div class="col-md-12 mt-5">
+            <div class="col-md-12 mt-3">
                 <form action="index.php" method="POST">
                     <div class="card">
                         <div class="card-header">

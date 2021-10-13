@@ -121,10 +121,6 @@ body{
     top: 5px;
 }
 
-
-
-
-
 .form .btn{
     flex-basis: 40%;
     background: var(--lg-lightcolor); 
@@ -151,7 +147,7 @@ body{
 }
 
 .form .btn:hover{
-    background:  linear-gradient(to right, #74ebd5, #9face6)
+    background:  linear-gradient(to right, #74ebd5, #9face6 );
 }
 
 
