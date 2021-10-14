@@ -1,8 +1,11 @@
 <?php
 session_start();
+//echo(phpversion());
 include("database.php");
 $obj = new database();
 
+
+//variables for the database values if have
 $id = "";
 $name = "";
 $email = "";
@@ -28,7 +31,9 @@ $disableErr  = "";
 
 if (isset($_GET['id']) && $_GET['id'] != "") {
     $id = $_GET['id'];
+    
     $data = $obj->select($id);
+    
     //print_r($data);
     $name = $data['0']['user_firstname'];
     $email = $data['0']['user_email'];
@@ -39,6 +44,14 @@ if (isset($_GET['id']) && $_GET['id'] != "") {
     $course = $data['0']['user_status'];
     $gender = $data['0']['user_gender'];
     $disable = $data['0']['user_disable'];
+}
+
+function test_input($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
 }
 
 
@@ -135,7 +148,7 @@ if (isset($_POST['submit'])) {
         $error = true;
     }
 
-
+    //PHP Gender Validation
     if (empty($_POST['gender'])) {
         $genderErr = "* Please Select Gender";
         $error = false;
@@ -164,9 +177,8 @@ if (isset($_POST['submit'])) {
     //print_r($conditional_array);
     if ($error == true) {
         if ($id == "") {
-            
             $emailcheck = $obj->duplication($email);
-            if($emailcheck > 0){
+            if(isset($emailcheck['0']) > 0){
                 $emailErr = "* Email Already present PHP!";
             }
             else{
@@ -174,54 +186,42 @@ if (isset($_POST['submit'])) {
                 if ($insert) {
                         ?>
                             <script>
-                                alert("Data Inserted");
-                                <?php $_SESSION['message'] = " Record Inserted Successfully ";?>
+                                alert("* Data Inserted Successfully!");
+                                <?php $_SESSION['message'] = "* Record Inserted Successfully! ";?>
+                                window.location.href = "http://localhost/crudop/index.php";
                             </script>
                         <?php
                     }
-                        ?>
+                        /*?>
                         <script>
-                                   window.location.href = "http://localhost/crudop/index.php";
+                                   window.location.href = "http://127.0.0.1:8080/crudop//index.php";
                         </script>
-                    <?php
+                    <?php*/
             }
         } else {
+            $emailcheck = $obj->duplication($email);
+            if(isset($emailcheck['0']) > 0){
+                $emailErr = "* Email Already present PHP!";
+            }else{
                 $update = $obj->update($conditional_array, $id);
                 if ($update) {
                 ?>
                     <script>
-                        alert("Data Updated");
-                       <?php $_SESSION['message'] = " Record Updated Successfully ";?>
+                        alert("* Data Updated Successfully!");
+                       <?php $_SESSION['message'] = "* Record Updated Successfully! ";?>
+                        window.location.href = "http://localhost/crudop/index.php";
                     </script>
                 <?php
                 } else {
                 ?>
                     <script>
-                        alert("Error Occured While Updating Record");
+                        alert("* Error Occured While Updating Record");
                     </script>
                 <?php
                 }
-    
-                ?>
-                <script>
-                   window.location.href = "http://localhost/crudop/index.php";
-                </script>
-                <?php 
+            } 
         }
     }
-}
-//to show records
-$result = $obj->select();
-// In Parameter there comes a id number
-// echo "<pre>";
-// print_r($result);
-
-function test_input($data)
-{
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
 }
 
 ?>
@@ -241,10 +241,9 @@ function test_input($data)
 </head>
 
 <body>
-
     <div class="container">
         <div class="header">
-            <h2> Manage Registeration Form</h2>
+            <h2> Manage User</h2>
         </div>
 
         <!-- Call  Comfirm function here -->
@@ -263,7 +262,7 @@ function test_input($data)
             <!-- User Email -->
             <div class="form-control">
                 <label for="Email">Email </label>
-                 <input type="hidden" name="email_check" id="useremail_check" value="<?php echo $email; ?>"/>
+                <input type="hidden" name="email_check" id="useremail_check" value="<?php echo $email; ?>"/>
                 <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
@@ -303,7 +302,7 @@ function test_input($data)
             <!-- User Phone Number -->
             <div class="form-control">
                 <label for="user Phone">Use Phone </label>
-                <input type="number" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
+                <input type="text" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small>Error Message</small>
@@ -371,7 +370,7 @@ function test_input($data)
                         ?>
                             <script>
                                 alert("Invalid Entry");
-                                window.location.href = "http://127.0.0.1:8080/crudop//addusers.php";
+                                window.location.href = "http://127.0.0.1:8080/crudop//index.php";
                             </script>
                         <?php
                     }
@@ -387,10 +386,16 @@ function test_input($data)
     </div>
 
 
-    <!-- Javascript -->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+
+
+
+
+
+
+                                                    <!-- Javascript -->
     
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script type="text/Javascript">
     
     
@@ -408,7 +413,7 @@ function test_input($data)
           }
     }
     
-    
+    //Email Availability check
         $(document).ready(function(){
             $('#useremail').blur(function(){
                 var email = $('#useremail').val();
@@ -431,8 +436,6 @@ function test_input($data)
                     $('#emailErr').html("");
                     $('#submit').attr('disabled', false);
                 }
-                
-                
             });
         });
         
@@ -449,7 +452,7 @@ function test_input($data)
         const disable = document.form.disable;
         const gender = document.form.gender;
 
-        //Define Validate Function
+        //Define Validate Function starts from here
         function Validate() {
             const nameval= username.value.trim();
             const emailval = useremail.value.trim();

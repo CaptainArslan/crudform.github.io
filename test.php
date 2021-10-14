@@ -34,12 +34,12 @@
   // echo '<pre>';
   // print_r($result);
   
-  $email = 'mughalarslan996@gmail.com';
-  
-   $result = $obj->selectemail($email);
-   echo '<pre>';
-   print_r($result);
-
+//  $email = 'mughalarslan996@gmail.com';
+//  
+//   $result = $obj->selectemail($email);
+//   echo '<pre>';
+//   print_r($result);
+//
     //  $result=$obj->selectphone('03177638978');
     //  echo '<pre>';
     //  print_r($result);

@@ -12,23 +12,30 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
     $id =  $_GET['delid'];
     
     if ($obj->delete($id)) {
-        $_SESSION['message'] = " Record Deleted Successfully ";
+        $_SESSION['message'] = "* Record Deleted Successfully ";
     } else {
-        $_SESSION['message'] = " Something Went Wrong While deleting Data From database ";
+        $_SESSION['message'] = "* Something Went Wrong While deleting Data From database ";
     }
 }
 
 if (isset($_POST['delete_selected'])) {
     
-    if(isset($_POST['myCheck']) && $_POST['myCheck'] != "" ){
+    if(isset($_POST['myCheck']) && $_POST['myCheck'] != "" )
+    {
         $delete_value = $_POST['myCheck'];
-        $ids = implode(",", $delete_value);
-        if ($obj->deletemultiple($ids)) {
-            $_SESSION['message'] = "* Record Deleted Successfully where id's $ids;";
+        foreach($_POST['myCheck'] as $ids)
+        {
+                $obj->delete($ids);
+        }
+        //$ids = implode(",", $delete_value);
+        if ($obj->delete($ids)) {
+            $_SESSION['message'] = "* Record Deleted Successfully ";
        } else {
-            $_SESSION['message'] = "* Error Occured While Record Deltion $ids";
+            $_SESSION['message'] = "* Error Occured While Record Deletion ";
        }
-    }else{
+    }
+    else
+    {
         $_SESSION['message'] = "* Please Select a Record to Delete!";
     }
 }
@@ -80,6 +87,7 @@ $result = $obj->select();
                 }
             }
         }
+        
     </script>
 </head>
 
@@ -110,7 +118,7 @@ $result = $obj->select();
                             <h4>
                                 PHP CRUD OPERATIONS
                                 <a href="addusers.php" class="btn btn-primary  float-end">Register/add</a>
-                                <button type="submit" class="btn btn-danger float-end ms-1" name="delete_selected" onclick="return confirm('Are you Sure for to do this')">Delete Selected</button>
+                                <button type="submit" class="btn btn-danger float-end ms-1" id="delete_selected" name="delete_selected" onclick="return confirm('Are you Sure for to do this')">Delete Selected</button>
                             </h4>
                         </div>
                         <div class="card-body">
@@ -134,14 +142,14 @@ $result = $obj->select();
                                 </thead>
                                 <tbody>
                                     <?php
-                                    if (isset($result['0']) > 0) {
+                                    if ($result) {
                                         $sr = 1;
                                         foreach ($result as $list) {
                                         ?>
                                             <tr>
 
                                                 <td> <input type="checkbox" id="checkbox" name="myCheck[]" value="<?php echo $list['id']; ?>" /></td>
-                                                <th scope="row"><?php echo $list['id']; ?></th>
+                                                <th scope="row"><?php echo  $list['id'] ; ?></th>
                                                 <td><?php echo $list['user_firstname']; ?></td>
                                                 <td><?php echo $list['user_email']; ?></td>
                                                 <td><?php echo $list['user_password']; ?></td>
