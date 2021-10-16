@@ -7,8 +7,9 @@ ob_start();
 include("database.php");
 $obj = new database();
 
-
-if (isset($_GET['type']) && $_GET['type'] == 'delete') {
+// For Delete Single Record function
+if (isset($_GET['type']) && $_GET['type'] == 'delete') 
+{
     $id =  $_GET['delid'];
     
     if ($obj->delete($id)) {
@@ -18,7 +19,10 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
     }
 }
 
-if (isset($_POST['delete_selected'])) {
+
+//For Multiple Record Deletion Function
+if (isset($_POST['delete_selected'])) 
+{
     
     if(isset($_POST['myCheck']) && $_POST['myCheck'] != "" )
     {
@@ -28,11 +32,14 @@ if (isset($_POST['delete_selected'])) {
                 $obj->delete($ids);
         }
         //$ids = implode(",", $delete_value);
-        if ($obj->delete($ids)) {
+        if ($obj->delete($ids)) 
+        {
             $_SESSION['message'] = "* Record Deleted Successfully ";
-       } else {
+        } 
+        else 
+        {
             $_SESSION['message'] = "* Error Occured While Record Deletion ";
-       }
+        }
     }
     else
     {
@@ -58,36 +65,67 @@ $result = $obj->select();
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
     <title>User Data</title>
 
     <script type="text/javascript">
         var selectall = document.getElementById("allcheckbox");
 
-        function checkboxselect() {
+        function checkboxselect() 
+        {
             var selectall = document.getElementById("allcheckbox");
             if (selectall.checked == true) {
                 var ele = document.getElementsByName('myCheck[]');
-                for (var i = 0; i < ele.length; i++) {
+                for (var i = 0; i < ele.length; i++) 
+                {
                     if (ele[i].type == 'checkbox')
                         ele[i].checked = true;
                 }
-            } else {
+            } 
+            else 
+            {
                 var ele = document.getElementsByName('myCheck[]');
-                for (var i = 0; i < ele.length; i++) {
+                for (var i = 0; i < ele.length; i++) 
+                {
                     if (ele[i].type == 'checkbox')
                         ele[i].checked = false;
-
                 }
             }
         }
         
+        function isChecked()
+        {
+            if($('input[type=checkbox]:checked').length > 0)
+            {
+                var result = confirm("Are you sure to delete selected users?");
+                if(result)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                swal(" Please Select record to delete.");
+                //alert('Select at least 1 record to delete.');
+                return false;
+            }
+        }
+        
+        $(document).ready(function() 
+            {
+                $('#tbl_data').DataTable( 
+                {
+                    "order": [[ 3, "desc" ]]
+                });
+            });
     </script>
 </head>
 
@@ -118,15 +156,15 @@ $result = $obj->select();
                             <h4>
                                 PHP CRUD OPERATIONS
                                 <a href="addusers.php" class="btn btn-primary  float-end">Register/add</a>
-                                <button type="submit" class="btn btn-danger float-end ms-1" id="delete_selected" name="delete_selected" onclick="return confirm('Are you Sure for to do this')">Delete Selected</button>
+                                <button type="submit" class="btn btn-danger float-end ms-1" id="delete_selected" name="delete_selected" onclick="return isChecked()">Delete Selected</button>
                             </h4>
                         </div>
                         <div class="card-body">
-                            <table class="table caption-top">
+                            <table class="table caption-top" id="tbl_data">
                                 <caption>List of users</caption>
                                 <thead class="table-dark">
                                     <tr>
-                                        <th> <input type="checkbox" name="selectall" id="allcheckbox" onclick="checkboxselect()" /> </th>
+                                        <th> <input type="checkbox" name="selectall"  id="allcheckbox" onclick="checkboxselect()" /> </th>
                                         <th scope="col">#</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
@@ -143,12 +181,12 @@ $result = $obj->select();
                                 <tbody>
                                     <?php
                                     if ($result) {
-                                        $sr = 1;
+                                        $sr = 0;
                                         foreach ($result as $list) {
                                         ?>
                                             <tr>
 
-                                                <td> <input type="checkbox" id="checkbox" name="myCheck[]" value="<?php echo $list['id']; ?>" /></td>
+                                                <td> <input type="checkbox" id="<?php echo $list['id']; ?>" class="chk" name="myCheck[]" value="<?php echo $list['id']; ?>" /></td>
                                                 <th scope="row"><?php echo  $list['id'] ; ?></th>
                                                 <td><?php echo $list['user_firstname']; ?></td>
                                                 <td><?php echo $list['user_email']; ?></td>
@@ -162,7 +200,7 @@ $result = $obj->select();
                                                     <a href="addusers.php?id=<?php echo $list['id']; ?>" class="btn btn-primary">Edit</a>
                                                 </td>
                                                 <td>
-                                                    <a href="index.php?type=delete&delid=<?php echo $list['id']; ?> " class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                                                    <a href="index.php?type=delete&delid=<?php echo $list['id']; ?> " class="btn btn-danger" onclick="return confirm('Are you Sure To Delete This Record?')">Delete</a>
                                                     <!-- <button type="button" value="<?php echo $list['id']; ?> " class=" delet_confirm btn btn-danger">Delete</button> -->
                                                 </td>
                                             </tr>

@@ -23,7 +23,6 @@ class database
                 return false;
             }
         }else {
-            //$this->mysqli->begin_transaction();
             return true;
         }
     }
@@ -54,10 +53,10 @@ class database
         foreach ($params as $key => $value) {
             $args[] = " $key = '$value' ";
         }
-        $this->mysqli->begin_transaction();
+        
         $sql  = " UPDATE tbl_userdata SET" . implode(',', $args);
         if ($id != null) {
-            $sql .= " WHERE `id` = $id ";
+            $sql .= " WHERE `id` = $id";
         }
         //echo $sql;
         if ($this->mysqli->query($sql)) {
@@ -157,7 +156,7 @@ class database
             //print_r($data);
                 //$alldata[] = $row;
                 if ($data->num_rows > 0) {
-                    echo "* Email Already Taken!";
+                    echo "* Email Already Registered!";
                     echo "<script> $('#submit').attr('disabled', true); </script>";
                 }else{
                     //echo "";
@@ -165,21 +164,7 @@ class database
                 }
         }
 
-            //for Selection or Fetch email from database 
-        public function duplication($email)
-        {
-            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
-            $data = $this->mysqli->query($sql);
-                if ($data->num_rows > 0) {
-                    $alldata = array();
-                        while ($row = $data->fetch_assoc()) {
-                            $alldata[] = $row;
-                        }
-                        return $alldata;
-                }else{
-                    return false;
-                }
-        }
+
 
 
         //for Selection or Fetch phone from database 
@@ -191,13 +176,51 @@ class database
             //print_r($data);
                 //$alldata[] = $row;
                 if ($data->num_rows > 0 ) {
-                    echo " * Phone Already Taken!";
+                    echo " * Phone Already Registered!";
                     echo "<script> $('#submit').attr('disabled', true); </script>";
                 }else{
-                    echo "<span>* Phone Available </span>";
                     echo "<script> $('#submit').attr('disabled', false); </script>";
                 }
         }
+        
+        
+                                    //CHECK DUPLICATE DATA IN ADD USERS FILE FOR SERVER SIDE VALIDATION
+        
+        
+        //for Selection or Fetch email from database for add user in PHP
+        public function duplication($email)
+        {
+            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
+            $data = $this->mysqli->query($sql);
+                if ($data->num_rows > 0) {
+                    $alldata = array();
+                        while ($row = $data->fetch_assoc()) {
+                            $alldata[] = $row;
+                        }
+                    return $alldata;
+                }else{
+                    return false;
+                }
+        }
+        //for Selection or Fetch phone from database fo adduser in php
+        public function duplicatephone($phone = null)
+        {
+            $sql = "SELECT * FROM tbl_userdata WHERE user_phone = '$phone'";
+            //echo $sql;
+            $data = $this->mysqli->query($sql);
+            //print_r($data);
+                //$alldata[] = $row;
+                if ($data->num_rows > 0 ) {
+                    $allphone = array();
+                        while ($row = $data->fetch_assoc()) {
+                            $allphone[] = $row;
+                        }
+                    return $allphone;
+                }else{
+                    return false;
+                }
+        }    
+        
         
         
         
