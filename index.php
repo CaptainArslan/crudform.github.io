@@ -8,10 +8,9 @@ include("database.php");
 $obj = new database();
 
 // For Delete Single Record function
-if (isset($_GET['type']) && $_GET['type'] == 'delete') 
-{
+if (isset($_GET['type']) && $_GET['type'] == 'delete') {
     $id =  $_GET['delid'];
-    
+
     if ($obj->delete($id)) {
         $_SESSION['message'] = "* Record Deleted Successfully ";
     } else {
@@ -21,28 +20,19 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete')
 
 
 //For Multiple Record Deletion Function
-if (isset($_POST['delete_selected'])) 
-{
-    
-    if(isset($_POST['myCheck']) && $_POST['myCheck'] != "" )
-    {
+if (isset($_POST['delete_selected'])) {
+
+    if (isset($_POST['myCheck']) && $_POST['myCheck'] != "") {
         $delete_value = $_POST['myCheck'];
-        foreach($_POST['myCheck'] as $ids)
-        {
-                $obj->delete($ids);
-        }
-        //$ids = implode(",", $delete_value);
-        if ($obj->delete($ids)) 
-        {
+        foreach ($_POST['myCheck'] as $ids) {
+            $obj->delete($ids);
+        };
+        if ($obj->delete($ids)) {
             $_SESSION['message'] = "* Record Deleted Successfully ";
-        } 
-        else 
-        {
+        } else {
             $_SESSION['message'] = "* Error Occured While Record Deletion ";
         }
-    }
-    else
-    {
+    } else {
         $_SESSION['message'] = "* Please Select a Record to Delete!";
     }
 }
@@ -65,67 +55,74 @@ $result = $obj->select();
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>User Data</title>
+    <!-- DATA TABALES LINK FOR JQUERY PLUGINS -->
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+
+    <style>
+        .table th{
+            cursor: pointer;
+        } 
+    </style>
 
     <script type="text/javascript">
+    //Add Datatables in my tables for sorting, searching.
+        $(document).ready(function() {
+            $('#myTable').DataTable();
+        });
+
+
+
         var selectall = document.getElementById("allcheckbox");
 
-        function checkboxselect() 
-        {
+        function checkboxselect() {
             var selectall = document.getElementById("allcheckbox");
             if (selectall.checked == true) {
                 var ele = document.getElementsByName('myCheck[]');
-                for (var i = 0; i < ele.length; i++) 
-                {
+                for (var i = 0; i < ele.length; i++) {
                     if (ele[i].type == 'checkbox')
                         ele[i].checked = true;
                 }
-            } 
-            else 
-            {
+            } else {
                 var ele = document.getElementsByName('myCheck[]');
-                for (var i = 0; i < ele.length; i++) 
-                {
+                for (var i = 0; i < ele.length; i++) {
                     if (ele[i].type == 'checkbox')
                         ele[i].checked = false;
                 }
             }
         }
-        
-        function isChecked()
-        {
-            if($('input[type=checkbox]:checked').length > 0)
-            {
+
+        function isChecked() {
+            if ($('input[type=checkbox]:checked').length > 0) {
                 var result = confirm("Are you sure to delete selected users?");
-                if(result)
-                {
+                if (result) {
                     return true;
-                }
-                else
-                {
+                } else {
                     return false;
                 }
-            }
-            else
-            {
+            } else {
                 swal(" Please Select record to delete.");
                 //alert('Select at least 1 record to delete.');
                 return false;
             }
         }
-        
-        $(document).ready(function() 
-            {
-                $('#tbl_data').DataTable( 
-                {
-                    "order": [[ 3, "desc" ]]
-                });
+
+        $(document).ready(function() {
+            $('#tbl_data').DataTable({
+                "order": [
+                    [3, "desc"]
+                ]
             });
+        });
     </script>
 </head>
 
@@ -164,7 +161,7 @@ $result = $obj->select();
                                 <caption>List of users</caption>
                                 <thead class="table-dark">
                                     <tr>
-                                        <th> <input type="checkbox" name="selectall"  id="allcheckbox" onclick="checkboxselect()" /> </th>
+                                        <th> <input type="checkbox" name="selectall" id="allcheckbox" onclick="checkboxselect()" /> </th>
                                         <th scope="col">#</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
@@ -183,11 +180,11 @@ $result = $obj->select();
                                     if ($result) {
                                         $sr = 0;
                                         foreach ($result as $list) {
-                                        ?>
+                                    ?>
                                             <tr>
 
                                                 <td> <input type="checkbox" id="<?php echo $list['id']; ?>" class="chk" name="myCheck[]" value="<?php echo $list['id']; ?>" /></td>
-                                                <th scope="row"><?php echo  $list['id'] ; ?></th>
+                                                <th scope="row"><?php echo  $list['id']; ?></th>
                                                 <td><?php echo $list['user_firstname']; ?></td>
                                                 <td><?php echo $list['user_email']; ?></td>
                                                 <td><?php echo $list['user_password']; ?></td>
@@ -207,14 +204,12 @@ $result = $obj->select();
 
                                         <?php
                                             $sr++;
-                                        } ?>
-                                        <!-- <tr>
-                                            <td colspan="12" align="center" class="">
-                                                <input type="submit" class="btn btn-danger" name="" id="" value="Delete All">
-                                            </td>
-                                        </tr> -->
+                                        } 
+                                        ?>
                                     <?php
-                                    } else {
+                                    } 
+                                    else 
+                                    {
                                     ?>
                                         <tr>
                                             <td colspan="12" align="center" class=" text-white bg-secondary">No Record Found </td>
