@@ -8,12 +8,16 @@ include("database.php");
 $obj = new database();
 
 // For Delete Single Record function
-if (isset($_GET['type']) && $_GET['type'] == 'delete') {
+if (isset($_GET['type']) && $_GET['type'] == 'delete') 
+{
     $id =  $_GET['delid'];
 
-    if ($obj->delete($id)) {
+    if ($obj->delete($id)) 
+    {
         $_SESSION['message'] = "* Record Deleted Successfully ";
-    } else {
+    } 
+    else 
+    {
         $_SESSION['message'] = "* Something Went Wrong While deleting Data From database ";
     }
 }
@@ -22,28 +26,30 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
 //For Multiple Record Deletion Function
 if (isset($_POST['delete_selected'])) {
 
-    if (isset($_POST['myCheck']) && $_POST['myCheck'] != "") {
-        $delete_value = $_POST['myCheck'];
-        foreach ($_POST['myCheck'] as $ids) {
-            $obj->delete($ids);
-        };
-        if ($obj->delete($ids)) {
-            $_SESSION['message'] = "* Record Deleted Successfully ";
-        } else {
-            $_SESSION['message'] = "* Error Occured While Record Deletion ";
-        }
-    } else {
-        $_SESSION['message'] = "* Please Select a Record to Delete!";
+    if (isset($_POST['myCheck']) && $_POST['myCheck'] != "") 
+    {
+       echo $delete_value = $_POST['myCheck'];
+       
+            if ($obj->delete($delete_value)) 
+            {
+                $_SESSION['message'] = "* Record Deleted Successfully  ";
+            } 
+            else 
+            {
+                $_SESSION['message'] = "* Error Occured While Record Deletion ";
+            }
+      
+    } 
+    else 
+    {
+        $_SESSION['message'] = "* Please Select a Record to Delete! ";
     }
 }
-
-
 //To Following line of code is used to Show All Data
 $result = $obj->select();
 //This pre will tell us about the Index which we set under this in the table body
 //echo '<pre>';
 //print_r($result);
-
 ?>
 
 <!doctype html>
@@ -67,15 +73,8 @@ $result = $obj->select();
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
-
-    <style>
-        .table th{
-            cursor: pointer;
-        } 
-    </style>
-
     <script type="text/javascript">
-    //Add Datatables in my tables for sorting, searching.
+        //Add Datatables in my tables for sorting, searching.
         $(document).ready(function() {
             $('#myTable').DataTable();
         });
@@ -117,11 +116,7 @@ $result = $obj->select();
         }
 
         $(document).ready(function() {
-            $('#tbl_data').DataTable({
-                "order": [
-                    [3, "desc"]
-                ]
-            });
+            $('#tbl_data').DataTable({});
         });
     </script>
 </head>
@@ -204,12 +199,10 @@ $result = $obj->select();
 
                                         <?php
                                             $sr++;
-                                        } 
+                                        }
                                         ?>
                                     <?php
-                                    } 
-                                    else 
-                                    {
+                                    } else {
                                     ?>
                                         <tr>
                                             <td colspan="12" align="center" class=" text-white bg-secondary">No Record Found </td>

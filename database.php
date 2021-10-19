@@ -76,7 +76,13 @@ class database
     public function delete($id)
     {
         $this->mysqli->begin_transaction();
-        $sql = " DELETE FROM `tbl_userdata` WHERE `id`=$id";
+
+        
+
+           echo  $sql = " DELETE FROM `tbl_userdata1` WHERE `id`=$id";
+
+        
+        //$sql = " DELETE FROM `tbl_userdata1` WHERE `id`=$id";
         if ($this->mysqli->query($sql)) 
         {
             $this->mysqli->commit();
@@ -89,6 +95,7 @@ class database
         } 
         else 
         {
+            echo $id ;
             $this->mysqli->rollBack();
                /*if($this->mysqli->rollBack())
                 {
