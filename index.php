@@ -28,9 +28,9 @@ if (isset($_POST['delete_selected'])) {
 
     if (isset($_POST['myCheck']) && $_POST['myCheck'] != "") 
     {
-       echo $delete_value = $_POST['myCheck'];
-       
-            if ($obj->delete($delete_value)) 
+        $id  = $_POST['myCheck'];
+
+            if ($obj->deletemultiple($id)) 
             {
                 $_SESSION['message'] = "* Record Deleted Successfully  ";
             } 

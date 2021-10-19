@@ -187,14 +187,14 @@ if (isset($_POST['submit'])) {
         if ($id == "") 
         {
             $emailcheck = $obj->duplication($email);
-            $phonecheck = $obj->duplicatephone($phone);
+            // $phonecheck = $obj->duplicatephone($phone);
             if(isset($emailcheck['0']) > 0){
                 $emailErr = "* Email Already present PHP!";
             }
-            if($phonecheck['0'] > 0)
-            {
-                $phoneErr = "* Phone Number Already Present PHP";
-            }
+            // if($phonecheck['0'] > 0)
+            // {
+            //     $phoneErr = "* Phone Number Already Present PHP";
+            // }
             else
             {
                 $insert =  $obj->insert($conditional_array);
@@ -220,16 +220,16 @@ if (isset($_POST['submit'])) {
         else 
         {
             $emailcheck = $obj->duplication($email);
-            $phonecheck = $obj->duplicatephone($phone);
+            // $phonecheck = $obj->duplicatephone($phone);
             
-            if(isset($emailcheck['0']) > 1)
+            if($emailcheck)
             {
                 $emailErr = "* Email Already present PHP!";
             }
-            if(isset($phonecheck['0']) > 1)
-            {
-                $phoneErr = "* Phone Number Already Present PHP";
-            }
+            // if(isset($phonecheck['0']) > 1)
+            // {
+            //     $phoneErr = "* Phone Number Already Present PHP";
+            // }
             else
             {
                 $update = $obj->update($conditional_array, $id);
@@ -456,63 +456,63 @@ function confirmation(){
     }
     
    // EMAIL AVAILABLITY CHECK BY AJAX JQUERY
-        $(document).ready(function(){
-            $('#useremail').blur(function(){
-                var email = $('#useremail').val();
-                var email_hidden_check = $('#useremail_check').val();
-                //to check the values of the variables
-                console.log(email_hidden_check);
-                console.log(email);
-                if(email != email_hidden_check){
-                    $.ajax({
-                        type: "POST",
-                        url: "checking.php",
-                        data: 'email='+email,
-                        success: function (data) {
-                            $('#emailErr').html(data);
-                        },error:function(){
-                        }
-                    });
+        // $(document).ready(function(){
+        //     $('#useremail').blur(function(){
+        //         var email = $('#useremail').val();
+        //         var email_hidden_check = $('#useremail_check').val();
+        //         //to check the values of the variables
+        //         console.log(email_hidden_check);
+        //         console.log(email);
+        //         if(email != email_hidden_check){
+        //             $.ajax({
+        //                 type: "POST",
+        //                 url: "checking.php",
+        //                 data: 'email='+email,
+        //                 success: function (data) {
+        //                     $('#emailErr').html(data);
+        //                 },error:function(){
+        //                 }
+        //             });
                     
-                }else{
-                    $('#emailErr').html("");
-                    $('#submit').attr('disabled', false);
-                }
-            });
-        });
+        //         }else{
+        //             $('#emailErr').html("");
+        //             $('#submit').attr('disabled', false);
+        //         }
+        //     });
+        // });
         
         
         //PHONE AVAILABLITY IN DATABASE BY AJAX JQUERY 
-        $(document).ready(function(){
-            $('#userphone').blur(function(){
-                var phone = $('#userphone').val();
-                var phone_hidden_check = $('#userphone_check').val();
-                //to check the values of the variables
-                console.log(phone_hidden_check);
-                console.log(phone);
-                if(phone != phone_hidden_check)
-                {
-                    $.ajax({
-                        type: "POST",
-                        url: "checking.php",
-                        data: 'phone='+phone,
-                        success: function (data) 
-                        {
-                            $('#phoneErr').html(data);
-                        },
-                        error:function()
-                        {
+        // $(document).ready(function(){
+        //     $('#userphone').blur(function(){
+        //         var phone = $('#userphone').val();
+        //         var phone_hidden_check = $('#userphone_check').val();
+        //         //to check the values of the variables
+        //         console.log(phone_hidden_check);
+        //         console.log(phone);
+        //         if(phone != phone_hidden_check)
+        //         {
+        //             $.ajax({
+        //                 type: "POST",
+        //                 url: "checking.php",
+        //                 data: 'phone='+phone,
+        //                 success: function (data) 
+        //                 {
+        //                     $('#phoneErr').html(data);
+        //                 },
+        //                 error:function()
+        //                 {
                             
-                        }
-                    });
-                }
-                else
-                {
-                    $('#phoneErr').html("");
-                    $('#submit').attr('disabled', false);
-                }
-            });
-        });
+        //                 }
+        //             });
+        //         }
+        //         else
+        //         {
+        //             $('#phoneErr').html("");
+        //             $('#submit').attr('disabled', false);
+        //         }
+        //     });
+        // });
         
         
         

@@ -22,7 +22,7 @@ class database
                 //array_push($this->result, $this->mysqli->connect_error);
                 return false;
             }
-        }else {
+        } else {
             return true;
         }
     }
@@ -53,7 +53,7 @@ class database
         foreach ($params as $key => $value) {
             $args[] = " $key = '$value' ";
         }
-        
+
         $sql  = " UPDATE tbl_userdata SET" . implode(',', $args);
         if ($id != null) {
             $sql .= " WHERE `id` = $id";
@@ -62,8 +62,7 @@ class database
         if ($this->mysqli->query($sql)) {
             //array_push($this->result, $this->mysqli->affected_rows);
             return true;
-        } 
-        else {
+        } else {
             return false;
         }
     }
@@ -72,63 +71,50 @@ class database
 
 
 
-    //for deletion from database
+    //for deletion from database of single record
     public function delete($id)
     {
         $this->mysqli->begin_transaction();
-
-        
-
-           echo  $sql = " DELETE FROM `tbl_userdata1` WHERE `id`=$id";
-
-        
-        //$sql = " DELETE FROM `tbl_userdata1` WHERE `id`=$id";
-        if ($this->mysqli->query($sql)) 
-        {
+        $sql = " DELETE FROM `tbl_userdata` WHERE `id`=$id";
+        if ($this->mysqli->query($sql)) {
             $this->mysqli->commit();
-          /* if($this->mysqli->commit())
+            /* if($this->mysqli->commit())
            {
                 echo "* Data Deleted Successfully!";
            }*/
             //array_push($this->result, $this->mysqli->affected_rows);
             return true;
-        } 
-        else 
-        {
-            echo $id ;
+        } else {
             $this->mysqli->rollBack();
-               /*if($this->mysqli->rollBack())
+            /*if($this->mysqli->rollBack())
                 {
                      echo "* Data Not Deleted RolledBack!";
                 }*/
             return false;
         }
     }
-    
-    //for Multiple deletion from database
-//        public function deletemultiple($ids)
-//        {
-//            $this->mysqli->begin_transaction();
-//            $sql = " DELETE FROM `tbl_userdata` WHERE `id` IN($ids)";
-//            if ($this->mysqli->query($sql)) 
-//            {
-//                array_push($this->result, $this->mysqli->affected_rows);
-//                $this->mysqli->commit();
-//                if($this->mysqli->commit())
-//                {
-//                    echo "* Data Deleted Successfully trans!";
-//                }
-//                return true;
-//            } else {
-//                array_push($this->result, $this->mysqli->error);
-//                $this->mysqli->rollBack();
-//                 if($this->mysqli->rollBack())
-//                 {
-//                    echo "* Data Not Deleted RolledBack!";
-//                 }
-//                return false;
-//            }
-//        }
+
+    //for Multiple record deletion from database
+    public function deletemultiple($ids)
+    {
+        $this->mysqli->begin_transaction();
+        //print_r($ids);
+        for ($i = 0; $i <= count($ids); $i++) 
+        {
+            $del_id = implode(",", $ids);
+            echo $sql = " DELETE FROM `tbl_userdata` WHERE `id` IN($del_id) ";
+            if ($this->mysqli->query($sql)) 
+            {
+                $this->mysqli->commit();
+                return true;
+            } 
+            else
+            {
+                $this->mysqli->rollBack();
+                return false;
+            }
+        }
+    }
 
 
 
@@ -154,83 +140,83 @@ class database
         }
     }
 
-        //for Selection or Fetch email from database 
-        public function selectemail($email = null)
-        {
-            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
-            //echo $sql;
-            $data = $this->mysqli->query($sql);
-            //print_r($data);
-                //$alldata[] = $row;
-                if ($data->num_rows > 0) {
-                    echo "* Email Already Registered!";
-                    echo "<script> $('#submit').attr('disabled', true); </script>";
-                }else{
-                    //echo "";
-                    echo "<script> $('#submit').attr('disabled', false); </script>";
-                }
+    //for Selection or Fetch email from database 
+    public function selectemail($email = null)
+    {
+        $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
+        //echo $sql;
+        $data = $this->mysqli->query($sql);
+        //print_r($data);
+        //$alldata[] = $row;
+        if ($data->num_rows > 0) {
+            echo "* Email Already Registered!";
+            echo "<script> $('#submit').attr('disabled', true); </script>";
+        } else {
+            //echo "";
+            echo "<script> $('#submit').attr('disabled', false); </script>";
         }
+    }
 
 
 
 
-        //for Selection or Fetch phone from database 
-        public function selectphone($phone = null)
-        {
-            $sql = "SELECT * FROM tbl_userdata WHERE user_phone = '$phone'";
-            //echo $sql;
-            $data = $this->mysqli->query($sql);
-            //print_r($data);
-                //$alldata[] = $row;
-                if ($data->num_rows > 0 ) {
-                    echo " * Phone Already Registered!";
-                    echo "<script> $('#submit').attr('disabled', true); </script>";
-                }else{
-                    echo "<script> $('#submit').attr('disabled', false); </script>";
-                }
+    //for Selection or Fetch phone from database 
+    public function selectphone($phone = null)
+    {
+        $sql = "SELECT * FROM tbl_userdata WHERE user_phone = '$phone'";
+        //echo $sql;
+        $data = $this->mysqli->query($sql);
+        //print_r($data);
+        //$alldata[] = $row;
+        if ($data->num_rows > 0) {
+            echo " * Phone Already Registered!";
+            echo "<script> $('#submit').attr('disabled', true); </script>";
+        } else {
+            echo "<script> $('#submit').attr('disabled', false); </script>";
         }
-        
-        
-                                    //CHECK DUPLICATE DATA IN ADD USERS FILE FOR SERVER SIDE VALIDATION
-        
-        
-        //for Selection or Fetch email from database for add user in PHP
-        public function duplication($email)
-        {
-            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
-            $data = $this->mysqli->query($sql);
-                if ($data->num_rows > 0) {
-                    $alldata = array();
-                        while ($row = $data->fetch_assoc()) {
-                            $alldata[] = $row;
-                        }
-                    return $alldata;
-                }else{
-                    return false;
-                }
+    }
+
+
+    //CHECK DUPLICATE DATA IN ADD USERS FILE FOR SERVER SIDE VALIDATION
+
+
+    //for Selection or Fetch email from database for add user in PHP
+    public function duplication($email)
+    {
+        $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
+        $data = $this->mysqli->query($sql);
+        if ($data->num_rows > 0) {
+            $alldata = array();
+            while ($row = $data->fetch_assoc()) {
+                $alldata[] = $row;
+            }
+            return $alldata;
+        } else {
+            return false;
         }
-        //for Selection or Fetch phone from database fo adduser in php
-        public function duplicatephone($phone = null)
-        {
-            $sql = "SELECT * FROM tbl_userdata WHERE user_phone = '$phone'";
-            //echo $sql;
-            $data = $this->mysqli->query($sql);
-            //print_r($data);
-                //$alldata[] = $row;
-                if ($data->num_rows > 0 ) {
-                    $allphone = array();
-                        while ($row = $data->fetch_assoc()) {
-                            $allphone[] = $row;
-                        }
-                    return $allphone;
-                }else{
-                    return false;
-                }
-        }    
-        
-        
-        
-        
+    }
+    //for Selection or Fetch phone from database fo adduser in php
+    public function duplicatephone($phone = null)
+    {
+        $sql = "SELECT * FROM tbl_userdata WHERE user_phone = '$phone'";
+        //echo $sql;
+        $data = $this->mysqli->query($sql);
+        //print_r($data);
+        //$alldata[] = $row;
+        if ($data->num_rows > 0) {
+            $allphone = array();
+            while ($row = $data->fetch_assoc()) {
+                $allphone[] = $row;
+            }
+            return $allphone;
+        } else {
+            return false;
+        }
+    }
+
+
+
+
     //for Close or Dissconnect Connection from database
     public function __destruct()
     {
