@@ -8,16 +8,11 @@ include("database.php");
 $obj = new database();
 
 // For Delete Single Record function
-if (isset($_GET['type']) && $_GET['type'] == 'delete') 
-{
+if (isset($_GET['type']) && $_GET['type'] == 'delete') {
     $id =  $_GET['delid'];
-
-    if ($obj->delete($id)) 
-    {
+    if ($obj->delete($id)) {
         $_SESSION['message'] = "* Record Deleted Successfully ";
-    } 
-    else 
-    {
+    } else {
         $_SESSION['message'] = "* Something Went Wrong While deleting Data From database ";
     }
 }
@@ -25,23 +20,14 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete')
 
 //For Multiple Record Deletion Function
 if (isset($_POST['delete_selected'])) {
-
-    if (isset($_POST['myCheck']) && $_POST['myCheck'] != "") 
-    {
+    if (isset($_POST['myCheck']) && $_POST['myCheck'] != "") {
         $id  = $_POST['myCheck'];
-
-            if ($obj->deletemultiple($id)) 
-            {
-                $_SESSION['message'] = "* Record Deleted Successfully  ";
-            } 
-            else 
-            {
-                $_SESSION['message'] = "* Error Occured While Record Deletion ";
-            }
-      
-    } 
-    else 
-    {
+        if ($obj->deletemultiple($id)) {
+            $_SESSION['message'] = "* Record Deleted Successfully  ";
+        } else {
+            $_SESSION['message'] = "* Error Occured While Record Deletion ";
+        }
+    } else {
         $_SESSION['message'] = "* Please Select a Record to Delete! ";
     }
 }

@@ -11,13 +11,4 @@ if(isset($_POST['email']))
 }else{
     $emailcheck = 0;
 }
-
-if(isset($_POST['phone']))
-{
-    $phonecheck = $_POST['phone'];
-    $emaildata = $obj->selectphone($phonecheck);
-}else{
-     $phonecheck = 0;
-}
-
 ?>

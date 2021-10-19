@@ -4,6 +4,13 @@ session_start();
 include("database.php");
 $obj = new database();
 
+//AJAX EMAIL CHECK
+if (isset($_POST['email'])) {
+    $emailcheck = $_POST['email'];
+    $emaildata = $obj->selectemail($emailcheck);
+} else {
+    $emailcheck = 0;
+}
 
 //variables for the database values if have
 $id = "";
@@ -31,9 +38,9 @@ $disableErr  = "";
 
 if (isset($_GET['id']) && $_GET['id'] != "") {
     $id = $_GET['id'];
-    
+
     $data = $obj->select($id);
-    
+
     //print_r($data);
     $name = $data['0']['user_firstname'];
     $email = $data['0']['user_email'];
@@ -79,7 +86,7 @@ if (isset($_POST['submit'])) {
         $emailErr = "* Please Enter Your Email!";
         $error = false;
     } else {
-        $email = strtolower(test_input($_POST["email"])) ;
+        $email = strtolower(test_input($_POST["email"]));
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $emailErr = "* Invalid Email Format";
             $error = false;
@@ -149,117 +156,86 @@ if (isset($_POST['submit'])) {
     }
 
     //PHP Gender Validation
-    if (empty($_POST['gender'])) 
-    {
+    if (empty($_POST['gender'])) {
         $genderErr = "* Please Select Gender";
         $error = false;
-    } else 
-    {
+    } else {
         $gender = test_input($_POST['gender']);
     }
 
     //PHP Course Validation
-    if (empty($_POST['course'])) 
-    {
+    if (empty($_POST['course'])) {
         $courseErr = "* Please Enter Gender";
         $error = false;
-    } 
-    else 
-    {
+    } else {
         $course = test_input($_POST['course']);
         $error = true;
     }
-    
+
     //PHP Disable check
-    if (empty($_POST['disable'])) 
-    {
+    if (empty($_POST['disable'])) {
         $disable = "";
-    } else 
-    {
+    } else {
         $disable = test_input($_POST['disable']);
     }
 
     $conditional_array = array('user_firstname' => $name, 'user_email' => $email, 'user_password' => $password, 'user_confirm_pass' => $confirm_pass, 'user_phone' => $phone, 'user_address' => $address, 'user_gender' => $gender, 'user_status' => $course, 'user_disable' => $disable);
 
     //print_r($conditional_array);
-    if ($error == true) 
-    {
-        if ($id == "") 
-        {
+    if ($error == true) {
+        if ($id == "") {
             $emailcheck = $obj->duplication($email);
-            // $phonecheck = $obj->duplicatephone($phone);
-            if(isset($emailcheck['0']) > 0){
+            if (isset($emailcheck['0']) > 0) {
                 $emailErr = "* Email Already present PHP!";
-            }
-            // if($phonecheck['0'] > 0)
-            // {
-            //     $phoneErr = "* Phone Number Already Present PHP";
-            // }
-            else
-            {
+            } else {
                 $insert =  $obj->insert($conditional_array);
-                if ($insert) 
-                {
-                        ?>
-                            <script>
-                                alert("* Data Inserted Successfully!");
-                                <?php $_SESSION['message'] = "* Record Inserted Successfully! ";?>
-                                window.location.href = "http://localhost/crudop/index.php";
-                            </script>
-                        <?php
-                }else{
-                    ?>
-                            <script>
-                                alert("* Error Occured while Insertion");
-                                sweetAlert("Oops...", "Something went wrong!", "error");
-                            </script>
-                    <?php
+                if ($insert) {
+?>
+                    <script>
+                        alert("* Data Inserted Successfully!");
+                        <?php $_SESSION['message'] = "* Record Inserted Successfully! "; ?>
+                        window.location.href = "http://localhost/crudop/index.php";
+                    </script>
+                <?php
+                } else {
+                ?>
+                    <script>
+                        alert("* Error Occured while Insertion");
+                        sweetAlert("Oops...", "Something went wrong!", "error");
+                    </script>
+                <?php
                 }
             }
-        }
-        else 
-        {
+        } else {
             $emailcheck = $obj->duplication($email);
-            // $phonecheck = $obj->duplicatephone($phone);
-            
-            if($emailcheck)
-            {
-                $emailErr = "* Email Already present PHP!";
-            }
-            // if(isset($phonecheck['0']) > 1)
-            // {
-            //     $phoneErr = "* Phone Number Already Present PHP";
-            // }
-            else
-            {
+            if ($emailcheck) {
+                $emailErr = "* Email Already Registered PHP!";
+            } else {
                 $update = $obj->update($conditional_array, $id);
-                if ($update) 
-                {
-                    ?>
-                        <script>
-                           alert("* Data Updated Successfully!");
-                           <?php $_SESSION['message'] = "* Record Updated Successfully! ";?>
-                            window.location.href = "http://localhost/crudop/index.php";
-                        </script>
-                    <?php
+                if ($update) {
+                ?>
+                    <script>
+                        alert("* Data Updated Successfully!");
+                        <?php $_SESSION['message'] = "* Record Updated Successfully! "; ?>
+                        window.location.href = "http://localhost/crudop/index.php";
+                    </script>
+                <?php
+                } else {
+                ?>
+                    <script>
+                        alert("* Error Occured While Updating Record");
+                        //sweetAlert("Oops...", "Something went wrong!", "error");
+                    </script>
+<?php
                 }
-                else
-                {
-                    ?>
-                        <script>
-                            alert("* Error Occured While Updating Record");
-                            //sweetAlert("Oops...", "Something went wrong!", "error");
-                        </script>
-                    <?php
-                }
-            } 
+            }
         }
     }
 }
 
 
-function confirmation(){
-    
+function confirmation()
+{
 }
 
 ?>
@@ -302,7 +278,7 @@ function confirmation(){
             <!-- User Email -->
             <div class="form-control">
                 <label for="Email">Email </label>
-                 <input type="hidden" name="email_check" id="useremail_check" value="<?php echo $email; ?>"/>
+                <input type="hidden" name="email_check" id="useremail_check" value="<?php echo $email; ?>" />
                 <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
@@ -312,7 +288,7 @@ function confirmation(){
 
             <!-- Password -->
             <div class="form-control">
-            
+
                 <label for="Password">Password </label>
                 <input type="password" id="userpassword" name="password" placeholder="Enter Your Password" autocomplete="off" value="<?php echo $password; ?>" />
                 <i class="fas fa-check-circle"></i>
@@ -334,15 +310,15 @@ function confirmation(){
                 <small>Error Message</small>
                 <span style="float: right; color: red;"><?php echo $confirmErr; ?></span>
             </div>
-                
+
             <div class="form-control">
                 <label for="ShowPassword"> Show Password <input type="checkbox" id="ShowPassword" onclick="showPassword()" /></label>
             </div>
-            
+
             <!-- User Phone Number -->
             <div class="form-control">
                 <label for="user Phone">Use Phone </label>
-                <input type="hidden" name="phone_check" id="userphone_check" value="<?php echo $phone; ?>"/>
+                <input type="hidden" name="phone_check" id="userphone_check" value="<?php echo $phone; ?>" />
                 <input type="text" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
@@ -402,25 +378,24 @@ function confirmation(){
 
             <!-- submit button -->
             <div class="btns">
-            <?php 
-                if(isset($_GET['id']) && $_GET['id'] != ""){
+                <?php
+                if (isset($_GET['id']) && $_GET['id'] != "") {
                     $id = $_GET['id'];
                     $update_data = $obj->select($id);
-                    if($update_data){
-                        ?><input type="submit" id="submit" name="submit" class="btn" placeholder="Update" value="Update" onclick="return Validate()" /><?php
-                    }else{
-                        ?>
-                            <script>
-                                alert("Invalid Entry");
-                                window.location.href = "http://localhost/crudop/addusers.php";
-                            </script>
-                        <?php
-                    }
-                    
-                }else{
+                    if ($update_data) {
+                ?><input type="submit" id="submit" name="submit" class="btn" placeholder="Update" value="Update" onclick="return Validate()" /><?php
+                                                                                                                                                    } else {
+                                                                                                                                                        ?>
+                        <script>
+                            alert("Invalid Entry");
+                            window.location.href = "http://localhost/crudop/addusers.php";
+                        </script>
+                    <?php
+                                                                                                                                                    }
+                                                                                                                                                } else {
                     ?><input type="submit" id="submit" name="submit" class="btn" placeholder="submit" value="Submit" onclick="return Validate()" /><?php
-                }
-            ?>
+                                                                                                                                                }
+                                                                                                                                                    ?>
                 <!--<button id="submit" name="submit" class="btn submit_btn">Submit</button>-->
                 <a href="index.php" class="btn">Back</a>
             </div>
@@ -435,13 +410,13 @@ function confirmation(){
 
 
 
-                                                    <!-- Javascript -->
-    
+    <!-- Javascript -->
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script type="text/Javascript">
-    
-    
-    function showPassword()
+
+
+        function showPassword()
     {
         var x = document.getElementById('userpassword');
         var y = document.getElementById('Cpass');
@@ -456,69 +431,32 @@ function confirmation(){
     }
     
    // EMAIL AVAILABLITY CHECK BY AJAX JQUERY
-        // $(document).ready(function(){
-        //     $('#useremail').blur(function(){
-        //         var email = $('#useremail').val();
-        //         var email_hidden_check = $('#useremail_check').val();
-        //         //to check the values of the variables
-        //         console.log(email_hidden_check);
-        //         console.log(email);
-        //         if(email != email_hidden_check){
-        //             $.ajax({
-        //                 type: "POST",
-        //                 url: "checking.php",
-        //                 data: 'email='+email,
-        //                 success: function (data) {
-        //                     $('#emailErr').html(data);
-        //                 },error:function(){
-        //                 }
-        //             });
+        $(document).ready(function(){
+            $('#useremail').blur(function(){
+                var email = $('#useremail').val();
+                var email_hidden_check = $('#useremail_check').val();
+                //to check the values of the variables
+                console.log(email_hidden_check);
+                console.log(email);
+                if(email != email_hidden_check){
+                    $.ajax({
+                        type: "POST",
+                        url: "checking.php",
+                        data: 'email='+email,
+                        success: function (data) {
+                            $('#emailErr').html(data);
+                        },error:function(){
+                        }
+                    });
                     
-        //         }else{
-        //             $('#emailErr').html("");
-        //             $('#submit').attr('disabled', false);
-        //         }
-        //     });
-        // });
-        
-        
-        //PHONE AVAILABLITY IN DATABASE BY AJAX JQUERY 
-        // $(document).ready(function(){
-        //     $('#userphone').blur(function(){
-        //         var phone = $('#userphone').val();
-        //         var phone_hidden_check = $('#userphone_check').val();
-        //         //to check the values of the variables
-        //         console.log(phone_hidden_check);
-        //         console.log(phone);
-        //         if(phone != phone_hidden_check)
-        //         {
-        //             $.ajax({
-        //                 type: "POST",
-        //                 url: "checking.php",
-        //                 data: 'phone='+phone,
-        //                 success: function (data) 
-        //                 {
-        //                     $('#phoneErr').html(data);
-        //                 },
-        //                 error:function()
-        //                 {
-                            
-        //                 }
-        //             });
-        //         }
-        //         else
-        //         {
-        //             $('#phoneErr').html("");
-        //             $('#submit').attr('disabled', false);
-        //         }
-        //     });
-        // });
-        
-        
+                }else{
+                    $('#emailErr').html("");
+                    $('#submit').attr('disabled', false);
+                }
+            });
+        });
         
 
-        
-        
 
         const form = document.getElementById('form');
         const name = document.getElementById('username');

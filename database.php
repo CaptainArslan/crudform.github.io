@@ -75,41 +75,39 @@ class database
     public function delete($id)
     {
         $this->mysqli->begin_transaction();
-        $sql = " DELETE FROM `tbl_userdata` WHERE `id`=$id";
-        if ($this->mysqli->query($sql)) {
-            $this->mysqli->commit();
-            /* if($this->mysqli->commit())
-           {
-                echo "* Data Deleted Successfully!";
-           }*/
-            //array_push($this->result, $this->mysqli->affected_rows);
-            return true;
-        } else {
-            $this->mysqli->rollBack();
-            /*if($this->mysqli->rollBack())
-                {
-                     echo "* Data Not Deleted RolledBack!";
-                }*/
-            return false;
-        }
+
+            $sql = " DELETE FROM `tbl_userdata` WHERE `id`= '$id' ";
+            if ($this->mysqli->query($sql)) {
+                $this->mysqli->commit();
+                /* if($this->mysqli->commit())
+               {
+                    echo "* Data Deleted Successfully!";
+               }*/
+                //array_push($this->result, $this->mysqli->affected_rows);
+                return true;
+            } else {
+                $this->mysqli->rollBack();
+                /*if($this->mysqli->rollBack())
+                    {
+                         echo "* Data Not Deleted RolledBack!";
+                    }*/
+                return false;
+            }
     }
 
+
+
     //for Multiple record deletion from database
-    public function deletemultiple($ids)
+    public function deletemultiple($id)
     {
         $this->mysqli->begin_transaction();
-        //print_r($ids);
-        for ($i = 0; $i <= count($ids); $i++) 
-        {
-            $del_id = implode(",", $ids);
-            echo $sql = " DELETE FROM `tbl_userdata` WHERE `id` IN($del_id) ";
-            if ($this->mysqli->query($sql)) 
-            {
+        // print_r($id);
+        // https://makitweb.com/delete-multiple-selected-records-with-php/
+        foreach ($id as $value) {
+            echo $sql = " DELETE FROM `tbl_userdata` WHERE `id` = '$value' ";
+            if ($this->mysqli->query($sql)) {
                 $this->mysqli->commit();
-                return true;
-            } 
-            else
-            {
+            } else {
                 $this->mysqli->rollBack();
                 return false;
             }
@@ -149,35 +147,13 @@ class database
         //print_r($data);
         //$alldata[] = $row;
         if ($data->num_rows > 0) {
-            echo "* Email Already Registered!";
-            echo "<script> $('#submit').attr('disabled', true); </script>";
-        } else {
-            //echo "";
-            echo "<script> $('#submit').attr('disabled', false); </script>";
-        }
-    }
-
-
-
-
-    //for Selection or Fetch phone from database 
-    public function selectphone($phone = null)
-    {
-        $sql = "SELECT * FROM tbl_userdata WHERE user_phone = '$phone'";
-        //echo $sql;
-        $data = $this->mysqli->query($sql);
-        //print_r($data);
-        //$alldata[] = $row;
-        if ($data->num_rows > 0) {
-            echo " * Phone Already Registered!";
+            echo "*";
             echo "<script> $('#submit').attr('disabled', true); </script>";
         } else {
             echo "<script> $('#submit').attr('disabled', false); </script>";
         }
     }
 
-
-    //CHECK DUPLICATE DATA IN ADD USERS FILE FOR SERVER SIDE VALIDATION
 
 
     //for Selection or Fetch email from database for add user in PHP
@@ -195,25 +171,6 @@ class database
             return false;
         }
     }
-    //for Selection or Fetch phone from database fo adduser in php
-    public function duplicatephone($phone = null)
-    {
-        $sql = "SELECT * FROM tbl_userdata WHERE user_phone = '$phone'";
-        //echo $sql;
-        $data = $this->mysqli->query($sql);
-        //print_r($data);
-        //$alldata[] = $row;
-        if ($data->num_rows > 0) {
-            $allphone = array();
-            while ($row = $data->fetch_assoc()) {
-                $allphone[] = $row;
-            }
-            return $allphone;
-        } else {
-            return false;
-        }
-    }
-
 
 
 
