@@ -9,23 +9,31 @@ class database
     private $con = false;
     private $mysqli = "";
     private $result  = array();
+    
+  
 
 
 
     //for connection
     public function __construct()
     {
-        if (!$this->con) {
+        if (!$this->con) 
+        {
             $this->mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
             $this->con = true;
-            if ($this->mysqli->connect_error) {
+            if ($this->mysqli->connect_error) 
+            {
                 //array_push($this->result, $this->mysqli->connect_error);
                 return false;
             }
-        } else {
+        }
+        else 
+        {
             return true;
         }
     }
+
+
     //for insertion in database
     public function insert($params = array())
     {
@@ -34,11 +42,14 @@ class database
         $table_column = implode(',', array_keys($params));
         $table_value = implode("','", $params);
         $sql = "INSERT INTO tbl_userdata ($table_column) VALUES ('$table_value')";
-        if ($this->mysqli->query($sql)) {
-            //array_push($this->result, $this->mysqli->insert_id);
+        if ($this->mysqli->query($sql)) 
+        {
+            //array_push($this->result, $this->mysqli->affected_rows);
             return true;
-        } else {
-            array_push($this->result, $this->mysqli->error);
+        } 
+        else 
+        {
+            //array_push($this->result, $this->mysqli->error);
             return false;
         }
     }
@@ -50,19 +61,19 @@ class database
     public function update($params = array(), $id)
     {
         $args = array();
-        foreach ($params as $key => $value) {
+        foreach ($params as $key => $value) 
+        {
             $args[] = " $key = '$value' ";
         }
-
-        $sql  = " UPDATE tbl_userdata SET" . implode(',', $args);
-        if ($id != null) {
-            $sql .= " WHERE `id` = $id";
-        }
+        $sql  = " UPDATE tbl_userdata SET" . implode(',', $args). " WHERE `id` = $id";
         //echo $sql;
-        if ($this->mysqli->query($sql)) {
+        if ($this->mysqli->query($sql)) 
+        {
             //array_push($this->result, $this->mysqli->affected_rows);
             return true;
-        } else {
+        } 
+        else 
+        {
             return false;
         }
     }
@@ -71,48 +82,54 @@ class database
 
 
 
-    //for deletion from database of single record
+    //for deletion from database
     public function delete($id)
     {
-        $this->mysqli->begin_transaction();
-
-            $sql = " DELETE FROM `tbl_userdata` WHERE `id`= '$id' ";
-            if ($this->mysqli->query($sql)) {
-                $this->mysqli->commit();
-                /* if($this->mysqli->commit())
-               {
-                    echo "* Data Deleted Successfully!";
-               }*/
-                //array_push($this->result, $this->mysqli->affected_rows);
-                return true;
-            } else {
-                $this->mysqli->rollBack();
-                /*if($this->mysqli->rollBack())
-                    {
-                         echo "* Data Not Deleted RolledBack!";
-                    }*/
-                return false;
-            }
-    }
-
-
-
-    //for Multiple record deletion from database
-    public function deletemultiple($id)
-    {
-        $this->mysqli->begin_transaction();
-        // print_r($id);
-        // https://makitweb.com/delete-multiple-selected-records-with-php/
-        foreach ($id as $value) {
-            echo $sql = " DELETE FROM `tbl_userdata` WHERE `id` = '$value' ";
-            if ($this->mysqli->query($sql)) {
-                $this->mysqli->commit();
-            } else {
-                $this->mysqli->rollBack();
-                return false;
-            }
+        $sql = " DELETE FROM `tbl_userdata` WHERE `id`=$id";
+        if ($this->mysqli->query($sql)) 
+        {
+            return true;
+        } 
+        else 
+        {
+            return false;
         }
     }
+
+
+
+    //for Multiple deletion from database
+       public function deletemultiple($ids)
+       {
+           $this->mysqli->begin_transaction();
+           $checkid = true;
+            foreach($ids as $value)
+            {
+                $sql = " DELETE FROM `tbl_userdata` WHERE `id` = '$value' ";
+                
+                if ($this->mysqli->query($sql)) 
+                {
+                    $checkid = true;
+                }
+                else
+                {
+                    $checkid = false;
+                }
+            }
+            //check if query is working than commit it else rollback it
+            if($checkid == true)
+            {
+                $this->mysqli->commit();
+                //echo "* Data committed";
+                return true;
+            }
+            else
+            {
+                $this->mysqli->rollBack();
+                //echo "* Data Rolled back";
+                return false;
+            }
+       }
 
 
 
@@ -120,69 +137,104 @@ class database
     public function select($id = null)
     {
         $sql = "SELECT * FROM tbl_userdata";
-        if ($id != null) {
+        if ($id != null) 
+        {
             $sql .= " WHERE `id`=$id ";
         }
         //echo $sql;
         $data = $this->mysqli->query($sql);
         //print_r($data);
-        if ($data->num_rows > 0) {
+        if ($data->num_rows > 0) 
+        {
             $alldata = array();
-            while ($row = $data->fetch_assoc()) {
+            while ($row = $data->fetch_assoc()) 
+            {
                 $alldata[] = $row;
             }
             return $alldata;
-        } else {
+        } 
+        else 
+        {
             //echo "No Reocrd Founds";
             return false;
         }
     }
 
-    //for Selection or Fetch email from database 
-    public function selectemail($email = null)
-    {
-        $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
-        //echo $sql;
-        $data = $this->mysqli->query($sql);
-        //print_r($data);
-        //$alldata[] = $row;
-        if ($data->num_rows > 0) {
-            echo "*";
-            echo "<script> $('#submit').attr('disabled', true); </script>";
-        } else {
-            echo "<script> $('#submit').attr('disabled', false); </script>";
+        //for Selection or Fetch email from database 
+        public function selectemail($email = null)
+        {
+            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
+            //echo $sql;
+            $data = $this->mysqli->query($sql);
+            //print_r($data);
+                //$alldata[] = $row;
+                if ($data->num_rows > 0)
+                {
+                    echo "* Email Already Registered!";
+                    echo "<script> $('#submit').attr('disabled', true); </script>";
+                }
+                else
+                {
+                    //echo "";
+                    echo "<script> $('#submit').attr('disabled', false); </script>";
+                }
         }
-    }
+        
+                                    //CHECK DUPLICATE DATA IN ADD USERS FILE FOR SERVER SIDE VALIDATION
+        
+        
 
-
-
-    //for Selection or Fetch email from database for add user in PHP
-    public function duplication($email)
-    {
-        $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
-        $data = $this->mysqli->query($sql);
-        if ($data->num_rows > 0) {
-            $alldata = array();
-            while ($row = $data->fetch_assoc()) {
-                $alldata[] = $row;
-            }
-            return $alldata;
-        } else {
-            return false;
+                                    
+        //for Selection or Fetch email from database for insert user in PHP
+        public function duplication($email)
+        {
+            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
+            $data = $this->mysqli->query($sql);
+                if ($data->num_rows > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
         }
-    }
 
 
 
+
+
+        //for Selection or Fetch email from database for update user in PHP
+        public function duplicationupdate($email, $userid = null)
+        {
+            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email' and id != '$userid' ";
+                //echo $sql;
+            $data = $this->mysqli->query($sql);
+                if ($data->num_rows > 0)
+                {
+                   return true;
+                }
+                else
+                {
+                    return false;
+                }
+        }
+
+        
+        
     //for Close or Dissconnect Connection from database
     public function __destruct()
     {
-        if (!$this->con) {
-            if ($this->mysqli->close()) {
+        if (!$this->con)
+        {
+            if ($this->mysqli->close()) 
+            {
                 $this->con = false;
                 return true;
             }
-        } else {
+        } 
+        else
+        {
             return false;
         }
     }
