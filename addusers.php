@@ -29,6 +29,8 @@ $genderErr = "";
 $disableErr  = "";
 
 $error = true;
+$css_class= "";
+
 
 
 if (isset($_GET['id']) && $_GET['id'] != "") {
@@ -49,6 +51,21 @@ if (isset($_GET['id']) && $_GET['id'] != "") {
     $disable = $data['0']['user_disable'];
 }
 
+if(isset($_GET['id'])){
+    if ($getuserid = $obj->selectid($id))
+    {
+                
+    }
+    else
+    {
+        ?>
+            <script>
+                alert("* invalid Entry!");
+            </script>
+        <?php 
+    }
+}
+
 function test_input($data)
 {
     $data = trim($data);
@@ -56,6 +73,7 @@ function test_input($data)
     $data = htmlspecialchars($data);
     return $data;
 }
+
 
 
 if (isset($_POST['submit'])) 
@@ -120,11 +138,6 @@ if (isset($_POST['submit']))
             $passwordErr = "* Password Must be greater than 3!";
             $error = false;
         } 
-        else if (strlen($password) > 10) 
-        {
-            $passwordErr = "* Password Must be between 5 to 10 character!";
-            $error = false;
-        } 
         else 
         {
             $password = test_input($_POST["password"]);
@@ -176,7 +189,7 @@ if (isset($_POST['submit']))
     //PHP Address Validation
     if (empty($_POST['address'])) 
     {
-        $addressErr = "* Please Enter Your Phone";
+        $addressErr = "* Please Enter Your Address";
         $error = false;
     } 
     else 
@@ -230,7 +243,6 @@ if (isset($_POST['submit']))
             }
             else
             {
-                
                 $insert =  $obj->insert($conditional_array);
                 if ($insert) 
                 {
@@ -243,6 +255,8 @@ if (isset($_POST['submit']))
                 }
                 else
                 {
+                    
+                     $css_class = "alert-danger";
                     ?>
                             <script>
                                 alert("* Error Occured while Insertion");
@@ -253,41 +267,42 @@ if (isset($_POST['submit']))
         }
         else 
         {
-            $emailcheck = $obj->duplicationupdate($email, $userid);
+            $id = $_GET['id'];
             //print_r($emailcheck);
-            if($emailcheck)
-            {
-                $emailErr = "* Email Already Registeresd!";
-            }
-            else
-            {
-                $update = $obj->update($conditional_array, $id);
-                if ($update) 
+                $emailcheck = $obj->duplicationupdate($email, $userid);
+                if($emailcheck)
                 {
-                    ?>
-                        <script>
-                           //alert("* Data Updated Successfully!");
-                           <?php $_SESSION['message'] = "* Record Updated Successfully! ";?>
-                            window.location.href = "http://localhost/crudop/index.php";
-                        </script>
-                    <?php
+                    $emailErr = "* Email Already Registeresd!";
                 }
                 else
                 {
-                    ?>
-                        <script>
-                            alert("* Error Occured While Updating Record");
-                            //sweetAlert("Oops...", "Something went wrong!", "error");
-                        </script>
-                    <?php
+                    $update = $obj->update($conditional_array, $id);
+                    if ($update) 
+                    {
+                        ?>
+                            <script>
+                               //alert("* Data Updated Successfully!");
+                               <?php $_SESSION['message'] = "* Record Updated Successfully! ";?>
+                                window.location.href = "http://localhost/crudop/index.php";
+                            </script>
+                        <?php
+                    }
+                    else
+                    {
+                         $css_class = "alert-danger";
+                        ?>
+                            <script>
+                                alert("* Error Occured While Updating Record");
+                            </script>
+                        <?php
+    
+                    }
+                } 
+            
 
-                }
-            } 
         }
     }
 }
-
-
 
 ?>
 <!DOCTYPE html>
@@ -297,18 +312,24 @@ if (isset($_POST['submit']))
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User form</title>
+    <title>User Registeration form</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
+
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous"> -->
+
+    
     
     <link rel="shortcut icon" type="image" href="reg.png"/>
+    
 
 </head>
 
-<body>
+<body>   
     <div class="container">
         <div class="header">
             <h2> Manage User</h2>
@@ -434,21 +455,11 @@ if (isset($_POST['submit']))
                 if(isset($_GET['id']) && $_GET['id'] != "")
                 {
                     $id = $_GET['id'];
-                    $update_data = $obj->select($id);
+                    $update_data = $obj->selectid($id);
                     if($update_data)
                     {
-                        ?><input type="submit" id="submit" name="submit" class="btn" placeholder="Update" value="Update" onclick="" /><?php
+                        ?><input type="submit" id="submit" name="submit" class="btn" placeholder="Update" value="Update" onclick="return Validate()" /><?php
                     }
-                    else
-                    {
-                        ?>
-                            <script>
-                                alert("Invalid Entry by user");
-                                // window.location.href = "http://localhost/crudop/index.php";
-                            </script>
-                        <?php
-                    }
-                    
                 }
                 else
                 {
@@ -472,10 +483,13 @@ if (isset($_POST['submit']))
         var x = document.getElementById('userpassword');
         var y = document.getElementById('Cpass');
         console.log()
-          if (x.type === "password" || y.type === "password") {
+          if (x.type === "password" || y.type === "password") 
+          {
             x.type = "text";
             y.type = "text"
-          } else {
+          } 
+          else
+          {
             x.type = "password";
             y.type = "Password"
           }
@@ -489,18 +503,23 @@ if (isset($_POST['submit']))
                 //to check the values of the variables
                 console.log(email_hidden_check);
                 console.log(email);
-                if(email != email_hidden_check){
+                if(email != email_hidden_check)
+                {
                     $.ajax({
                         type: "POST",
                         url: "checking.php",
                         data: 'email='+email,
-                        success: function (data) {
+                        success: function (data) 
+                        {
                             $('#emailErr').html(data);
-                        },error:function(){
+                        },error:function()
+                        {
+                        
                         }
                     });
-                    
-                }else{
+                }
+                else
+                {
                     $('#emailErr').html("");
                     $('#submit').attr('disabled', false);
                 }
@@ -715,7 +734,6 @@ if (isset($_POST['submit']))
             const formControl = input.parentElement;
             formControl.className = "form-control success";
         }
-
 
 
     </script>

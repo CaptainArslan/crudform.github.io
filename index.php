@@ -18,7 +18,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
             $css_class = "alert-success";
             $_SESSION['message'] = "* Record Deleted Successfully! ";
         } 
-        else 
+        else
         {
             $css_class = "alert-danger";
             $_SESSION['message'] = "* Error Occured While Deletion!";
@@ -29,7 +29,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
         $_SESSION['message'] = "* Invalid Entry";
         ?>
             <script>
-                alert("* Invalid Entery By user!");
+                alert("* Invalid Entery!")
                 window.location.href = "http://localhost/crudop/index.php";
             </script>
         <?php 
@@ -41,7 +41,6 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
 //For Multiple Record Deletion Function
 if (isset($_POST['delete_selected'])) 
 {
-    
     if(isset($_POST['myCheck']) && $_POST['myCheck'] != "" )
     {
         $id = $_POST['myCheck'];
@@ -61,6 +60,7 @@ if (isset($_POST['delete_selected']))
     }
     else
     {
+        $css_class = "alert-danger";
         $_SESSION['message'] = "* Please Select a Record to Delete!";
     }
 }
@@ -97,6 +97,7 @@ $result = $obj->select();
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js" ></script>
     <title>User Data</title>
     
+    <link rel="shortcut icon" type="image" href="tbl.png"/>
 
 
 
@@ -242,7 +243,6 @@ $result = $obj->select();
                                                 </td>
                                                 <td>
                                                     <a href="index.php?type=delete&delid=<?php echo $list['id']; ?> " class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
-                                                    <!-- <button type="button" value="<?php echo $list['id']; ?> " class=" delet_confirm btn btn-danger">Delete</button> -->
                                                 </td>
                                             </tr>
 

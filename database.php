@@ -10,9 +10,6 @@ class database
     private $mysqli = "";
     private $result  = array();
     
-  
-
-
 
     //for connection
     public function __construct()
@@ -65,6 +62,7 @@ class database
         {
             $args[] = " $key = '$value' ";
         }
+        
         $sql  = " UPDATE tbl_userdata SET" . implode(',', $args). " WHERE `id` = $id";
         //echo $sql;
         if ($this->mysqli->query($sql)) 
@@ -106,27 +104,25 @@ class database
             foreach($ids as $value)
             {
                 $sql = " DELETE FROM `tbl_userdata` WHERE `id` = '$value' ";
-                
-                if ($this->mysqli->query($sql)) 
+
+                if (!$this->mysqli->query($sql))
                 {
-                    $checkid = true;
-                }
-                else
-                {
-                    $checkid = false;
+                     $checkid = false;
+                     break;
                 }
             }
+            //echo $value;
             //check if query is working than commit it else rollback it
             if($checkid == true)
             {
                 $this->mysqli->commit();
-                //echo "* Data committed";
+                echo "* Data Committed!";               
                 return true;
             }
             else
             {
                 $this->mysqli->rollBack();
-                //echo "* Data Rolled back";
+                echo "* Data Rolled back!";
                 return false;
             }
        }
@@ -159,6 +155,28 @@ class database
             return false;
         }
     }
+    
+        public function selectid($id = null)
+    {
+        $sql = "SELECT * FROM tbl_userdata  WHERE `id` = $id";
+ 
+        //echo $sql;
+        $data = $this->mysqli->query($sql);
+        //print_r($data);
+        if ($data->num_rows > 0)
+        {
+            return true;
+        } 
+        else 
+        {
+            //echo "No Reocrd Founds";
+            return false;
+        }
+    }
+    
+    
+    
+    
 
         //for Selection or Fetch email from database 
         public function selectemail($email = null)
@@ -182,9 +200,6 @@ class database
         
                                     //CHECK DUPLICATE DATA IN ADD USERS FILE FOR SERVER SIDE VALIDATION
         
-        
-
-                                    
         //for Selection or Fetch email from database for insert user in PHP
         public function duplication($email)
         {
@@ -200,15 +215,11 @@ class database
                 }
         }
 
-
-
-
-
         //for Selection or Fetch email from database for update user in PHP
         public function duplicationupdate($email, $userid = null)
         {
-            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email' and id != '$userid' ";
-                //echo $sql;
+            $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'  and id != '$userid'";
+            //echo $sql;
             $data = $this->mysqli->query($sql);
                 if ($data->num_rows > 0)
                 {
@@ -225,17 +236,12 @@ class database
     //for Close or Dissconnect Connection from database
     public function __destruct()
     {
-        if (!$this->con)
+        if($this->con)
         {
             if ($this->mysqli->close()) 
             {
                 $this->con = false;
-                return true;
             }
-        } 
-        else
-        {
-            return false;
         }
     }
 }

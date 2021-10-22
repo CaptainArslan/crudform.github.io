@@ -150,12 +150,6 @@ body{
     background:  linear-gradient(to right, #74ebd5, #9face6 );
 }
 
-table th{
-    cursor: pointer;
-}
-
-
-
 
 
 @media(max-width:998px){
