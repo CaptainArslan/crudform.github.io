@@ -152,23 +152,7 @@ class database
         }
     }
 
-    //CHECK DUPLICATE DATA IN ADD USERS FILE FOR SERVER SIDE VALIDATION
-
-    //for Selection or Fetch email from database for insert user in PHP
-    // public function duplication($email)
-    // {
-    //     $sql = "SELECT * FROM tbl_userdata WHERE user_email = '$email'";
-    //     $data = $this->mysqli->query($sql);
-    //         if ($data->num_rows > 0)
-    //         {
-    //             return true;
-    //         }
-    //         else
-    //         {
-    //             return false;
-    //         }
-    // }
-
+    
     //for Selection or Fetch email from database for update user in PHP
     public function duplication($email, $userid = null)
     {
