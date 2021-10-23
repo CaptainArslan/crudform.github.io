@@ -52,7 +52,7 @@ if (isset($_GET['id']) && $_GET['id'] != "") {
 }
 
 if(isset($_GET['id'])){
-    if ($getuserid = $obj->selectid($id))
+    if ($getuserid = $obj->select($id))
     {
                 
     }
@@ -269,10 +269,10 @@ if (isset($_POST['submit']))
         {
             $id = $_GET['id'];
             //print_r($emailcheck);
-                $emailcheck = $obj->duplicationupdate($email, $userid);
+                $emailcheck = $obj->duplication($email, $userid);
                 if($emailcheck)
                 {
-                    $emailErr = "* Email Already Registeresd!";
+                    $emailErr = "* Email Already Registeresd PHP!";
                 }
                 else
                 {
@@ -455,7 +455,7 @@ if (isset($_POST['submit']))
                 if(isset($_GET['id']) && $_GET['id'] != "")
                 {
                     $id = $_GET['id'];
-                    $update_data = $obj->selectid($id);
+                    $update_data = $obj->select($id);
                     if($update_data)
                     {
                         ?><input type="submit" id="submit" name="submit" class="btn" placeholder="Update" value="Update" onclick="return Validate()" /><?php
