@@ -30,7 +30,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
         ?>
             <script>
                 alert("* Invalid Entry!");
-                window.location.href = "http://127.0.0.1:8080/crudop//index.php";
+                window.location.href = "http://localhost/crudop/index.php";
             </script>
         <?php 
     }
