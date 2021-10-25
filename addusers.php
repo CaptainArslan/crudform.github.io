@@ -6,38 +6,19 @@ $obj = new database();
 
 
 //variables for the database values if have
-$id = "";
-$name = "";
-$email = "";
-$password = "";
-$confirm_pass = "";
-$phone = "";
-$address = "";
-$course = "";
-$gender = "";
-$disable  = "";
+$id =  $name = $email = $password = $confirm_pass = $phone = $address = $course = $gender = $disable  = "";
 
 //Variables To show Erros
-$nameErr = "";
-$emailErr = "";
-$passwordErr = "";
-$confirmErr = "";
-$phoneErr = "";
-$addressErr = "";
-$courseErr = "";
-$genderErr = "";
-$disableErr  = "";
+$nameErr = $emailErr = $passwordErr = $confirmErr = $phoneErr = $addressErr = $courseErr = $genderErr = $disableErr  = "";
 
 $error = true;
 $css_class= "";
 
-
-
+//get data from database
 if (isset($_GET['id']) && $_GET['id'] != "") {
     $id = $_GET['id'];
     
     $data = $obj->select($id);
-    
     //print_r($data);
     $userid = $data['0']['id'];
     $name = $data['0']['user_firstname'];
@@ -51,21 +32,21 @@ if (isset($_GET['id']) && $_GET['id'] != "") {
     $disable = $data['0']['user_disable'];
 }
 
+//CHECK THE NETURN IF ID IS VALID OR NOT
 if(isset($_GET['id'])){
-    if ($getuserid = $obj->select($id))
-    {
-                
-    }
-    else
+    if (!$getuserid = $obj->select($id))
     {
         ?>
             <script>
                 alert("* invalid Entry!");
             </script>
-        <?php 
+        <?php     
     }
 }
 
+
+
+// PHP VALIDATION FUNCTIONS
 function test_input($data)
 {
     $data = trim($data);
@@ -75,7 +56,7 @@ function test_input($data)
 }
 
 
-
+//SUBMIT FORM PROCESS
 if (isset($_POST['submit'])) 
 {
     if (empty($_POST['name'])) 
@@ -249,18 +230,17 @@ if (isset($_POST['submit']))
                         ?>
                             <script>
                                 <?php $_SESSION['message'] = "* Record Inserted Successfully! "; ?>
-                                window.location.href = "http://localhost/crudop/index.php";
+                                window.location.href = "http://127.0.0.1:8080/crudop//index.php";
                             </script>
                         <?php
                 }
                 else
                 {
-                    
                      $css_class = "alert-danger";
                     ?>
-                            <script>
-                                alert("* Error Occured while Insertion");
-                            </script>
+                        <script>
+                            alert("* Error Occured while Insertion");
+                        </script>
                     <?php
                 }
             }
@@ -269,10 +249,10 @@ if (isset($_POST['submit']))
         {
             $id = $_GET['id'];
             //print_r($emailcheck);
-                $emailcheck = $obj->duplication($email, $userid);
+                $emailcheck = $obj->duplication($email, $id);
                 if($emailcheck)
                 {
-                    $emailErr = "* Email Already Registeresd PHP!";
+                    $emailErr = "* Email Already Registeresd!";
                 }
                 else
                 {
@@ -283,7 +263,7 @@ if (isset($_POST['submit']))
                             <script>
                                //alert("* Data Updated Successfully!");
                                <?php $_SESSION['message'] = "* Record Updated Successfully! ";?>
-                                window.location.href = "http://localhost/crudop/index.php";
+                               window.location.href = "http://127.0.0.1:8080/crudop//index.php";
                             </script>
                         <?php
                     }
@@ -297,9 +277,7 @@ if (isset($_POST['submit']))
                         <?php
     
                     }
-                } 
-            
-
+                }
         }
     }
 }
@@ -339,28 +317,28 @@ if (isset($_POST['submit']))
 
         <form class="form" action="" id="form" name="form" method="POST" onsubmit="return confirm('* Are you sure you wan to submit it?')">
             <!-- User Name -->
-            <div class="form-control">
+            <div class="form-control" id ="jqnameerror" >
                 <label for="user Name"> Name </label>
                 <input type="text" name="name" id="username" placeholder="Enter Your Full Name" autocomplete="off" value="<?php echo $name; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small>Error Message</small>
+                <small id ="nameErr" ></small>
                 <span style="float: right; color: red;"><?php echo $nameErr; ?></span>
             </div>
 
             <!-- User Email -->
-            <div class="form-control">
+            <div class="form-control" id="jqemailerror">
                 <label for="Email">Email </label>
-                 <input type="hidden" name="email_check" id="useremail_check" value="<?php echo $email; ?>"/>
+                <input type="hidden" name="email_check" id="useremail_check" value="<?php echo $email; ?>"/>
                 <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small>Error Message</small>
+                <small ></small>
                 <span style="float: right; color: red;" id="emailErr"><?php echo $emailErr; ?></span>
             </div>
 
             <!-- Password -->
-            <div class="form-control">
+            <div class="form-control"  id="jqpasserror" >
             
                 <label for="Password">Password </label>
                 <input type="password" id="userpassword" name="password" placeholder="Enter Your Password" autocomplete="off" value="<?php echo $password; ?>" />
@@ -370,37 +348,37 @@ if (isset($_POST['submit']))
                     <i class="fas fa-eye"></i>
                     <i class="fas fa-eye-slash"></i>
                 </div>
-                <small>Error Message</small>
+                <small></small>
                 <span style="float: right; color: red;"><?php echo $passwordErr; ?></span>
             </div>
 
             <!-- Confirm Password -->
-            <div class="form-control">
+            <div class="form-control" id="jqcpasserror" >
                 <label for="Verify Password">Confirm Password </label>
                 <input type="password" id="Cpass" name="confirm_pass" placeholder="Password" autocomplete="off" value="<?php echo $confirm_pass; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small>Error Message</small>
+                <small></small>
                 <span style="float: right; color: red;"><?php echo $confirmErr; ?></span>
             </div>
                 
-            <div class="form-control">
+            <div class="form-control" >
                 <label for="ShowPassword"> Show Password <input type="checkbox" id="ShowPassword" onclick="showPassword()" /></label>
             </div>
             
             <!-- User Phone Number -->
-            <div class="form-control">
+            <div class="form-control" id="jqphonerror" >
                 <label for="user Phone">Use Phone </label>
                 <input type="hidden" name="phone_check" id="userphone_check" value="<?php echo $phone; ?>"/>
                 <input type="text" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small>Error Message</small>
+                <small></small>
                 <span style="float: right; color: red;" id="phoneErr"><?php echo $phoneErr; ?></span>
             </div>
 
             <!-- Address -->
-            <div class="form-control">
+            <div class="form-control" id="jqaddresserror" >
                 <label for="Address">Address</label>
                 <input type="text" id="address" name="address" placeholder="Enter Your Address" autocomplete="off" value="<?php echo $address; ?>" />
                 <i class="fas fa-check-circle"></i>
@@ -410,20 +388,20 @@ if (isset($_POST['submit']))
             </div>
 
             <!-- Gender -->
-            <div class="form-control " id="genderclass">
+            <div class="form-control " id="genderclass" >
                 <label for="Gender">Gender : </label>
                 <label for="Male"><input type="radio" name="gender" value="Male" id="Male" <?php if ($gender == 'Male') echo 'Checked'; ?> />Male</label>
                 <label for="Female"><input type="radio" name="gender" value="Female" id="Female" <?php if ($gender == 'Female') echo 'Checked'; ?> />Female</label>
                 <label for="Other"><input type="radio" name="gender" value="Other" id="Other" <?php if ($gender == 'Other') echo 'Checked'; ?> />Other</label>
                 <i class="fas fa-check-circle gendererror"></i>
                 <i class="fas fa-exclamation-circle gendererror"></i>
-                <small id="genderErr">Error Message</small>
+                <small id="genderErr"></small>
                 <span style=" color: red;"><?php echo $genderErr; ?></span>
             </div>
 
 
             <!-- Course Select tag -->
-            <div class="form-control">
+            <div class="form-control" id="jqcourseerror" >
                 <label for="Course">Use Course </label>
                 <!-- <input type="text" id="username" placeholder="Enter Your Full Name"> -->
                 <select name="course" id="usercourse">
@@ -436,17 +414,17 @@ if (isset($_POST['submit']))
                 </select>
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small>Error Message</small>
+                <small></small>
                 <span style="float: right; color: red;"><?php echo $courseErr; ?></span>
             </div>
 
             <!-- Disable -->
-            <div class="form-control " id="genderclass">
+            <div class="form-control ">
                 <label for="disable">Disable : </label>
                 <label for="disable"><input type="checkbox" name="disable" value="disable" id="disable" <?php if ($disable == "disable") echo 'checked'; ?> /></label>
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small id="disableErr">Error Message</small>
+                <small id="disableErr"></small>
             </div>
 
             <!-- submit button -->
@@ -455,15 +433,14 @@ if (isset($_POST['submit']))
                 if(isset($_GET['id']) && $_GET['id'] != "")
                 {
                     $id = $_GET['id'];
-                    $update_data = $obj->select($id);
-                    if($update_data)
+                    if($obj->select($id))
                     {
                         ?><input type="submit" id="submit" name="submit" class="btn" placeholder="Update" value="Update" onclick="return Validate()" /><?php
                     }
                 }
                 else
                 {
-                    ?><input type="submit" id="submit" name="submit" class="btn" placeholder="submit" value="Submit" onclick="return Validate()" /><?php
+                    ?><input type="submit" id="submit" name="submit" class="btn" placeholder="submit" value="Submit"  onclick="return Validate()" /><?php
                 }
             ?>
                 <!--<button id="submit" name="submit" class="btn submit_btn">Submit</button>-->
@@ -496,8 +473,10 @@ if (isset($_POST['submit']))
     }
     
    // EMAIL AVAILABLITY CHECK BY AJAX JQUERY
-        $(document).ready(function(){
-            $('#useremail').blur(function(){
+        $(document).ready(function()
+        {
+            $('#useremail').blur(function()
+            {
                 var email = $('#useremail').val();
                 var email_hidden_check = $('#useremail_check').val();
                 //to check the values of the variables
@@ -505,27 +484,31 @@ if (isset($_POST['submit']))
                 console.log(email);
                 if(email != email_hidden_check)
                 {
-                    $.ajax({
+                    $.ajax(
+                    {
                         type: "POST",
                         url: "checking.php",
                         data: 'email='+email,
-                        success: function (data) 
+                        success: function (response) 
                         {
-                            $('#emailErr').html(data);
-                        },error:function()
-                        {
-                        
+                            if(response == "true")
+                            {
+                                // $('#emailErr').html(data);
+                                $('#emailErr').html("* Email Already Registered!");
+                                $('#submit').attr('disabled', true);
+                            }
+                            else
+                            {
+                                $('#emailErr').html("");
+                                $('#submit').attr('disabled',false);
+                            }
                         }
                     });
                 }
-                else
-                {
-                    $('#emailErr').html("");
-                    $('#submit').attr('disabled', false);
-                }
             });
         });
-        
+
+
 
         const form = document.getElementById('form');
         const name = document.getElementById('username');
@@ -653,8 +636,11 @@ if (isset($_POST['submit']))
             {
                 //alert("Please Select Gender");
                 //This below line is use to change the innerhtml of the small tag under the radio buttons
+
                 document.getElementById("genderErr").innerHTML = "* Please select Gender!";
-                //thie following is use to set the error class of readio buttons
+                
+                //thie following is use to set the error class of radio buttons
+                
                 var elem  = document.getElementById("genderclass");
                 elem.classList.add("error");
                 genderErr = false;

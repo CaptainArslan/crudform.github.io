@@ -7,8 +7,14 @@ $obj = new database();
 if(isset($_POST['email']))
 {
     $emailcheck = $_POST['email'];
-    $emaildata = $obj->selectemail($emailcheck);
-}else{
-    $emailcheck = 0;
+    $emaildata = $obj->duplication($emailcheck);
+    if($emaildata)
+    {
+        echo "true";
+    }
+    else
+    {
+        echo "false";
+    }
 }
 ?>

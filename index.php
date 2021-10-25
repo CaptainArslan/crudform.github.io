@@ -16,7 +16,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
         if ($obj->delete($id)) 
         {
             $css_class = "alert-success";
-            $_SESSION['message'] = "* Record Deleted Successfully! ";
+            $_SESSION['message'] = "* Record Deleted Successfully!";
         } 
         else
         {
@@ -29,12 +29,11 @@ if (isset($_GET['type']) && $_GET['type'] == 'delete') {
         $_SESSION['message'] = "* Invalid Entry";
         ?>
             <script>
-                alert("* Invalid Entery!")
-                window.location.href = "http://localhost/crudop/index.php";
+                alert("* Invalid Entry!");
+                window.location.href = "http://127.0.0.1:8080/crudop//index.php";
             </script>
         <?php 
     }
-
 }
 
 
