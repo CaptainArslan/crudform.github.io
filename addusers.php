@@ -12,12 +12,12 @@ $id =  $name = $email = $password = $confirm_pass = $phone = $address = $course 
 $nameErr = $emailErr = $passwordErr = $confirmErr = $phoneErr = $addressErr = $courseErr = $genderErr = $disableErr  = "";
 
 $error = true;
-$css_class = "";
+$css_class= "";
 
 //get data from database
 if (isset($_GET['id']) && $_GET['id'] != "") {
     $id = $_GET['id'];
-
+    
     $data = $obj->select($id);
     //print_r($data);
     $userid = $data['0']['id'];
@@ -33,13 +33,14 @@ if (isset($_GET['id']) && $_GET['id'] != "") {
 }
 
 //CHECK THE NETURN IF ID IS VALID OR NOT
-if (isset($_GET['id'])) {
-    if (!$getuserid = $obj->select($id)) {
-?>
-        <script>
-            alert("* invalid Entry!");
-        </script>
-        <?php
+if(isset($_GET['id'])){
+    if (!$getuserid = $obj->select($id))
+    {
+        ?>
+            <script>
+                alert("* invalid Entry!");
+            </script>
+        <?php     
     }
 }
 
@@ -56,49 +57,70 @@ function test_input($data)
 
 
 //SUBMIT FORM PROCESS
-if (isset($_POST['submit'])) {
-    if (empty($_POST['name'])) {
+if (isset($_POST['submit'])) 
+{
+    if (empty($_POST['name'])) 
+    {
         $nameErr = "* Please Enter Your Name!";
         $error = false;
-    } else {
+    } 
+    else 
+    {
         /* ucfirst() function is use to make the first letter captal*/
         $name = ucfirst(test_input($_POST["name"]));
-        if (!preg_match("/^[a-zA-Z ]+$/", $name)) {
+        if (!preg_match("/^[a-zA-Z ]+$/", $name)) 
+        {
             $nameErr = "* Only Letter, Words and white spaces are Allowed!";
             $error = false;
-        } else if (strlen($name) <= 2) {
+        } 
+        else if (strlen($name) <= 2) 
+        {
             $nameErr = "* Name Must be greater than 3 Character!";
             $error = false;
-        } else {
+        } 
+        else 
+        {
             $name = ucfirst(test_input($_POST["name"]));
         }
     }
 
     //PHP Email Validation
-    if (empty($_POST['email'])) {
+    if (empty($_POST['email'])) 
+    {
         $emailErr = "* Please Enter Your Email!";
         $error = false;
-    } else {
+    } 
+    else 
+    {
         /*strtolower() function is use to make the string to lower case*/
-        $email = strtolower(test_input($_POST["email"]));
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $email = strtolower(test_input($_POST["email"])) ;
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) 
+        {
             $emailErr = "* Invalid Email Format";
             $error = false;
-        } else {
+        } 
+        else 
+        {
             $email = strtolower(test_input($_POST["email"]));
         }
     }
 
     //PHP Password Validation
-    if (empty($_POST['password'])) {
+    if (empty($_POST['password'])) 
+    {
         $passwordErr = "* Please Enter Password!";
         $error = false;
-    } else {
+    } 
+    else 
+    {
         $password = test_input($_POST["password"]);
-        if (strlen($password) <= 3) {
+        if (strlen($password) <= 3) 
+        {
             $passwordErr = "* Password Must be greater than 3!";
             $error = false;
-        } else {
+        } 
+        else 
+        {
             $password = test_input($_POST["password"]);
         }
     }
@@ -106,116 +128,156 @@ if (isset($_POST['submit'])) {
 
 
     //PHP Confirm Password Validation
-    if (empty($_POST['confirm_pass'])) {
+    if (empty($_POST['confirm_pass'])) 
+    {
         $confirmErr = "* Please Confirm Your Password";
         $error = false;
-    } else {
+    } 
+    else 
+    {
         $confirm_pass = test_input($_POST["confirm_pass"]);
-        if ($password != $confirm_pass) {
+        if ($password != $confirm_pass) 
+        {
             $confirmErr = "* Password not Matched";
             $error = false;
-        } else {
+        }
+        else 
+        {
             $confirm_pass = test_input($_POST["confirm_pass"]);
         }
     }
 
     //PHP Phone Validation
-    if (empty($_POST['phone'])) {
+    if (empty($_POST['phone'])) 
+    {
         $phoneErr = "* Please Enter Your Phone";
         $error = false;
-    } else {
+    } 
+    else 
+    {
         $phone = test_input($_POST['phone']);
-        if (strlen($phone) < 10) {
+        if (strlen($phone) < 10) 
+        {
             $phoneErr = "* Phone Must be greater than 11 Character";
             $error = false;
-        } else {
+        } 
+        else 
+        {
             $phone = test_input($_POST['phone']);
         }
     }
 
     //PHP Address Validation
-    if (empty($_POST['address'])) {
+    if (empty($_POST['address'])) 
+    {
         $addressErr = "* Please Enter Your Address";
         $error = false;
-    } else {
+    } 
+    else 
+    {
         $address = test_input($_POST['address']);
     }
 
     //PHP Gender Validation
-    if (empty($_POST['gender'])) {
+    if (empty($_POST['gender'])) 
+    {
         $genderErr = "* Please Select Gender";
         $error = false;
-    } else {
+    } 
+    else 
+    {
         $gender = test_input($_POST['gender']);
     }
 
     //PHP Course Validation
-    if (empty($_POST['course'])) {
+    if (empty($_POST['course'])) 
+    {
         $courseErr = "* Please Enter Gender";
         $error = false;
-    } else {
+    } 
+    else 
+    {
         $course = test_input($_POST['course']);
     }
-
+    
     //PHP Disable check
-    if (empty($_POST['disable'])) {
+    if (empty($_POST['disable'])) 
+    {
         $disable = "";
-    } else {
+    } 
+    else 
+    {
         $disable = test_input($_POST['disable']);
     }
 
     $conditional_array = array('user_firstname' => $name, 'user_email' => $email, 'user_password' => $password, 'user_confirm_pass' => $confirm_pass, 'user_phone' => $phone, 'user_address' => $address, 'user_gender' => $gender, 'user_course' => $course, 'user_disable' => $disable);
 
     //print_r($conditional_array);
-    if ($error == true) {
-        if ($id == "") {
+    if ($error == true) 
+    {
+        if ($id == "") 
+        {
             $emailcheck = $obj->duplication($email);
-            if ($emailcheck) {
+            if($emailcheck)
+            {
                 $emailErr = "* Email Already Registered!";
-            } else {
+            }
+            else
+            {
                 $insert =  $obj->insert($conditional_array);
-                if ($insert) {
-        ?>
-                    <script>
-                        <?php $_SESSION['message'] = "* Record Inserted Successfully! "; ?>
-                        window.location.href = "http://localhost/crudop/index.php";
-                    </script>
-                <?php
-                } else {
-                    $css_class = "alert-danger";
-                ?>
-                    <script>
-                        alert("* Error Occured while Insertion");
-                    </script>
-                <?php
+                if ($insert) 
+                {
+                        ?>
+                            <script>
+                                <?php $_SESSION['message'] = "* Record Inserted Successfully! "; ?>
+                                window.location.href = "http://localhost/crudop/index.php";
+                            </script>
+                        <?php
+                }
+                else
+                {
+                     $css_class = "alert-danger";
+                    ?>
+                        <script>
+                            alert("* Error Occured while Insertion");
+                        </script>
+                    <?php
                 }
             }
-        } else {
+        }
+        else 
+        {
             $id = $_GET['id'];
             //print_r($emailcheck);
-            $emailcheck = $obj->duplication($email, $id);
-            if ($emailcheck) {
-                $emailErr = "* Email Already Registeresd!";
-            } else {
-                $update = $obj->update($conditional_array, $id);
-                if ($update) {
-                ?>
-                    <script>
-                        //alert("* Data Updated Successfully!");
-                        <?php $_SESSION['message'] = "* Record Updated Successfully! "; ?>
-                        window.location.href = "http://localhost/crudop/index.php";
-                    </script>
-                <?php
-                } else {
-                    $css_class = "alert-danger";
-                ?>
-                    <script>
-                        alert("* Error Occured While Updating Record");
-                    </script>
-<?php
-
+                $emailcheck = $obj->duplication($email, $id);
+                if($emailcheck)
+                {
+                    $emailErr = "* Email Already Registeresd!";
                 }
-            }
+                else
+                {
+                    $update = $obj->update($conditional_array, $id);
+                    if ($update) 
+                    {
+                        ?>
+                            <script>
+                               //alert("* Data Updated Successfully!");
+                               <?php $_SESSION['message'] = "* Record Updated Successfully! ";?>
+                               window.location.href = "http://localhost/crudop/index.php";
+                            </script>
+                        <?php
+                    }
+                    else
+                    {
+                         $css_class = "alert-danger";
+                        ?>
+                            <script>
+                                alert("* Error Occured While Updating Record");
+                            </script>
+                        <?php
+    
+                    }
+                }
         }
     }
 }
@@ -234,18 +296,10 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
-
-
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous"> -->
-
-
-
-    <link rel="shortcut icon" type="image" href="reg.png" />
-
-
+    <link rel="shortcut icon" type="image" href="reg.png"/>
 </head>
 
-<body>
+<body>   
     <div class="container">
         <div class="header">
             <h2> Manage User</h2>
@@ -255,29 +309,29 @@ if (isset($_POST['submit'])) {
 
         <form class="form" action="" id="form" name="form" method="POST" onsubmit="return confirm('* Are you sure you wan to submit it?')">
             <!-- User Name -->
-            <div class="form-control" id="jqnameerror">
+            <div class="form-control" id ="jqnameerror" >
                 <label for="user Name"> Name </label>
                 <input type="text" name="name" id="username" placeholder="Enter Your Full Name" autocomplete="off" value="<?php echo $name; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small id="nameErr"></small>
+                <small id ="nameErr" ></small>
                 <span style="float: right; color: red;"><?php echo $nameErr; ?></span>
             </div>
 
             <!-- User Email -->
             <div class="form-control" id="jqemailerror">
                 <label for="Email">Email </label>
-                <input type="hidden" name="email_check" id="useremail_check" value="<?php echo $email; ?>" />
-                <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email ; ?>" />
+                <input type="hidden" name="email_check" id="useremail_check" value="<?php echo $email; ?>"/>
+                <input type="email" name="email" id="useremail" placeholder="Enter Your Email" autocomplete="off" value="<?php echo $email; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small id="emailErr"></small>
-                <span style="float: right; color: red;" id="emaildupErr" ><?php echo $emailErr; ?></span>
+                <span style="float: right; color: red;"  id="emailduperror"><?php echo $emailErr; ?></span>
             </div>
 
             <!-- Password -->
-            <div class="form-control" id="jqpasserror">
-
+            <div class="form-control"  id="jqpasserror" >
+            
                 <label for="Password">Password </label>
                 <input type="password" id="userpassword" name="password" placeholder="Enter Your Password" autocomplete="off" value="<?php echo $password; ?>" />
                 <i class="fas fa-check-circle"></i>
@@ -286,47 +340,47 @@ if (isset($_POST['submit'])) {
                     <i class="fas fa-eye"></i>
                     <i class="fas fa-eye-slash"></i>
                 </div>
-                <small id="passwordErr"></small>
+                <small id="passwordErr" ></small>
                 <span style="float: right; color: red;"><?php echo $passwordErr; ?></span>
             </div>
 
             <!-- Confirm Password -->
-            <div class="form-control" id="jqcpasserror">
+            <div class="form-control" id="jqcpasserror" >
                 <label for="Verify Password">Confirm Password </label>
                 <input type="password" id="Cpass" name="confirm_pass" placeholder="Password" autocomplete="off" value="<?php echo $confirm_pass; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small id="confirm_passErr"></small>
+                <small id="confirm_passErr" ></small>
                 <span style="float: right; color: red;"><?php echo $confirmErr; ?></span>
             </div>
-
-            <div class="form-control">
+                
+            <div class="form-control" >
                 <label for="ShowPassword"> Show Password <input type="checkbox" id="ShowPassword" onclick="showPassword()" /></label>
             </div>
-
+            
             <!-- User Phone Number -->
-            <div class="form-control" id="jqphonerror">
+            <div class="form-control" id="jqphonerror" >
                 <label for="user Phone">Use Phone </label>
-                <input type="hidden" name="phone_check" id="userphone_check" value="<?php echo $phone; ?>" />
+                <input type="hidden" name="phone_check" id="userphone_check" value="<?php echo $phone; ?>"/>
                 <input type="text" id="userphone" name="phone" placeholder="Enter Your Phone Number" autocomplete="off" value="<?php echo $phone; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
                 <small id="phoneErr" ></small>
-                <span style="float: right; color: red;" ><?php echo $phoneErr; ?></span>
+                <span style="float: right; color: red;" id="phoneErr"><?php echo $phoneErr; ?></span>
             </div>
 
             <!-- Address -->
-            <div class="form-control" id="jqaddresserror">
+            <div class="form-control" id="jqaddresserror" >
                 <label for="Address">Address</label>
                 <input type="text" id="address" name="address" placeholder="Enter Your Address" autocomplete="off" value="<?php echo $address; ?>" />
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small id="addressErr">Error Message</small>
+                <small id="addressErr"></small>
                 <span style="float: right; color: red;"><?php echo $addressErr; ?></span>
             </div>
 
             <!-- Gender -->
-            <div class="form-control " id="genderclass">
+            <div class="form-control " id="genderclass" >
                 <label for="Gender">Gender : </label>
                 <label for="Male"><input type="radio" name="gender" value="Male" id="Male" <?php if ($gender == 'Male') echo 'Checked'; ?> />Male</label>
                 <label for="Female"><input type="radio" name="gender" value="Female" id="Female" <?php if ($gender == 'Female') echo 'Checked'; ?> />Female</label>
@@ -339,7 +393,7 @@ if (isset($_POST['submit'])) {
 
 
             <!-- Course Select tag -->
-            <div class="form-control" id="jqcourseerror">
+            <div class="form-control" id="jqcourseerror" >
                 <label for="Course">Use Course </label>
                 <!-- <input type="text" id="username" placeholder="Enter Your Full Name"> -->
                 <select name="course" id="usercourse">
@@ -352,7 +406,7 @@ if (isset($_POST['submit'])) {
                 </select>
                 <i class="fas fa-check-circle"></i>
                 <i class="fas fa-exclamation-circle"></i>
-                <small id="courseErr"></small>
+                <small id="courseErr" ></small>
                 <span style="float: right; color: red;"><?php echo $courseErr; ?></span>
             </div>
 
@@ -367,20 +421,20 @@ if (isset($_POST['submit'])) {
 
             <!-- submit button -->
             <div class="btns">
-                <?php
-                if (isset($_GET['id']) && $_GET['id'] != "") 
+            <?php 
+                if(isset($_GET['id']) && $_GET['id'] != "")
                 {
                     $id = $_GET['id'];
-                        if ($obj->select($id)) 
-                        {
-                            ?><input type="submit" id="submit" name="submit" class="btn" placeholder="Update" value="Update" /><?php
-                        }
-                } 
-                else 
-                {
-                    ?><input type="submit" id="submit" name="submit" class="btn" placeholder="submit" value="Submit" /><?php
+                    if($obj->select($id))
+                    {
+                        ?><input type="submit" id="submit" name="submit" class="btn" placeholder="Update" value="Update" onclick="return Validate()" /><?php
+                    }
                 }
-                ?>
+                else
+                {
+                    ?><input type="submit" id="submit" name="submit" class="btn" placeholder="submit" value="Submit" onclick="return Validate()" /><?php
+                }
+            ?>
                 <!--<button id="submit" name="submit" class="btn submit_btn">Submit</button>-->
                 <a href="index.php" class="btn">Back</a>
             </div>
@@ -388,11 +442,11 @@ if (isset($_POST['submit'])) {
     </div>
 
 
-    <!-- Javascript -->
-
+                                                    <!-- Javascript -->
+    
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script type="text/Javascript">
-
+        
     function showPassword()
     {
         var x = document.getElementById('userpassword');
@@ -432,12 +486,12 @@ if (isset($_POST['submit'])) {
                             if(response == "true")
                             {
                                 // $('#emailErr').html(data);
-                                $('#emaildupErr').html("* Email Already Registered!");
+                                $('#emailduperror').html("* Email Already Registered!");
                                 $('#submit').attr('disabled', true);
                             }
                             else
                             {
-                                $('#emaildupErr').html("");
+                                $('#emailduperror').html("");
                                 $('#submit').attr('disabled',false);
                             }
                         }
@@ -445,219 +499,8 @@ if (isset($_POST['submit'])) {
                 }
             });
         });
-
-
-
-$(document).ready(function () {
-    $('#submit').click(function (e) {
-        //e.preventDefault();
-        var nameErr = emailErr = passwordErr = confirmErr = phoneErr = addressErr = genderErr = courseErr = disableErr = true;
-
-        var nameval= $('#username').val();
-        var emailval =$('#useremail').val();
-        var phoneval = $('#userphone').val();
-        var passwordval = $('#userpassword').val();
-        var confirmval = $('#Cpass').val();
-        var addressval = $('#address').val();
-        var courseval = $('#usercourse').val();
-        var genderval = $('input[type=radio]').val();
-        var disableval = $('input[type=checkbox]').val();
-
-
-            console.log(nameval);
-            console.log(emailval);
-            console.log(phoneval);
-            console.log(passwordval);
-            console.log(confirmval);
-            console.log(addressval);
-            console.log(courseval);
-            console.log(genderval);
-            console.log(disableval);
-            
-        //Regular Expressions
-        var nameReg = /^[a-zA-Z ]{2,30}$/;
-        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-        var phoneReg = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-            
-
-        if(nameval==="")
-        {
-            $('#username').parent().addClass("error");
-            $("#nameErr").html("* This Field is required!");
-            nameErr = false;
-        }
-        else if(nameval.length <3 )
-        {
-            $('#username').parent().addClass("error");
-            $("#nameErr").html("* Name must be at least 3 character!");
-            nameErr = false;
-        }
-        else if(!nameReg.test(nameval))
-        {
-            $('#username').parent().addClass("error");
-            $("#nameErr").html("* Only character are allowed!");
-            nameErr = false;
-        }
-        else
-        {
-            $('#username').parent().removeClass("error").addClass("success");
-            $('#nameErr').html("");
-        }
-
-
-        //Email validation  
-        if(emailval==="")
-        {
-            $('#useremail').parent().addClass("error");
-            $('#emailErr').html("* This field is required jquery");
-            emailErr = false;
-        }
-        else if(!emailReg.test(emailval))
-        {
-            $('#useremail').parent().addClass("error");
-            $('#emailErr').html("* Invalid Email format");
-            emailErr = false;
-        }
-        else
-        {
-            $('#useremail').parent().removeClass("error").addClass("success");
-            $('#emailErr').html("");
-        }
-
-
-        //Passwor Validation
-        if(passwordval === ""){
-            $('#userpassword').parent().addClass("error");
-            $('#passwordErr').html("* This field is required!");
-            passwordErr = false;
-        }
-        else if(passwordval.length <8 )
-        {
-            $('#userpassword').parent().addClass("error");
-            $('#passwordErr').html("* Minimum 8 character!");
-            passwordErr = false;
-        }
-        else
-        {
-            $('#userpassword').parent().removeClass("error").addClass("success");
-            $('#userpassword').html("");
-        }
-
-        //Confirm Passwor Validation
-        if(confirmval === "")
-        {
-            $('#Cpass').parent().addClass("error");
-            $('#confirm_passErr').html("* This Field is required!");
-            confirmErr = false;
-        }
-        else if(passwordval != confirmval)
-        {
-            $('#Cpass').parent().addClass("error");
-            $('#confirm_passErr').html("* Password Not Matched!");
-            confirmErr = false;
-        }
-        else
-        {
-            $('#Cpass').parent().removeClass("error").addClass("success");
-            $('#Cpass').html("");
-        }
-
-
-
-        //Phone validation
-        if(phoneval==="")
-        {
-            $('#userphone').parent().addClass("error");
-            $('#phoneErr').html("* This Field is required!");
-            phoneErr = false;
-        }
-        else if(!phoneReg.test(phoneval))
-        {
-            $('#userphone').parent().addClass("error");
-            $('#phoneErr').html("* Invalid phone Format! Correct is = 03123456789");
-            phoneErr = false;
-        }
-        else
-        {
-            $('#userphone').parent().removeClass("error").addClass("success");
-            $('#userphone').html("");
-        }
-
-
-        //Address Validation
-        if(addressval === "")
-        {
-            $('#address').parent().addClass("error");
-            $('#addressErr').html("* This Field is required!");
-            addressErr = false;
-        }
-        else
-        {
-            $('#address').parent().removeClass("error").addClass("success");
-            $('#addressErr').html("");
-        }
-
-        //Gender Validation
-        if(genderval==="")
-        {
-            $('#genderclass').addClass("error");
-            $('#genderErr').html("* This Field is required!");
-            genderErr = false;
-        }
-        else
-        {
-            $('#genderclass').parent().removeClass("error").addClass("success");
-            $('#genderErr').html("");
-        }
-
-        //Course Validation
-        if(courseval === "" || courseval == 0)
-        {
-            $('#usercourse').parent().addClass("error");
-            $('#courseErr').html("* This Field is required!");
-            courseErr = false;
-        }
-        else
-        {
-            $('#usercourse').parent().removeClass("error").addClass("success");
-            $('#courseErr').html("");
-        }
-    
-    
-        console.log(nameErr);
-
-        console.log(emailErr);
-
-        console.log(passwordErr);
-
-        console.log(confirmErr);
-
-        console.log(phoneErr);
-
-        console.log(addressErr);
-
-        console.log(genderErr);
-        
-        console.log(courseErr);
-    
-    
-        //Main validate all the 
-        if( (nameErr && emailErr && phoneErr && courseErr && passwordErr && confirmErr && addressErr && genderErr) == false)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-
-
-    });
-});
-
-
-
     </script>
+    <script src="js/jquery.js"></script>
 </body>
 
 </html>

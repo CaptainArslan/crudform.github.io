@@ -244,7 +244,6 @@ $result = $obj->select();
                                                     <a href="index.php?type=delete&delid=<?php echo $list['id']; ?> " class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
                                                 </td>
                                             </tr>
-
                                         <?php
                                             $sr++;
                                         }

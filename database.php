@@ -20,7 +20,7 @@ class database
             $this->con = true;
             if ($this->mysqli->connect_error) 
             {
-                array_push($this->result, $this->mysqli->connect_error);
+                //array_push($this->result, $this->mysqli->connect_error);
                 return false;
             }
         }
@@ -34,7 +34,7 @@ class database
     //for insertion in database
     public function insert($params = array())
     {
-        // print_r($params);
+        //print_r($params);
         //here it gives us the error of array to strung error so we have to solve that first so for that we make "$table_column to implode" 
         $table_column = implode(',', array_keys($params));
         $table_value = implode("','", $params);
