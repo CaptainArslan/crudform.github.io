@@ -1,0 +1,85 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+caption {
+    font-size: 20px;
+    margin: 5px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.container {
+    max-width: 1300px;
+    margin: auto;
+    box-shadow: rgba(0, 0, 0, 0.5%);
+}
+
+.alert {
+    color: #000;
+    padding: 10px;
+    background-color: rgba(255, 0, 0, 0.644);
+}
+
+table {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.card-header button,
+a {
+    float: right;
+    padding: 10px;
+}
+
+.card-header button {
+    font-size: 16px;
+    margin-right: 5px;
+    border: none;
+}
+
+a:hover,
+button:hover {
+    opacity: 70%;
+}
+
+table thead {
+    background: #333;
+    color: #fff;
+    border: none;
+}
+
+.table-dark {
+    background: #333;
+    color: #fff;
+}
+
+th {
+    padding: 10px;
+    border: none;
+}
+
+tr {
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background: #f1f1f1;
+}
+
+.btn {
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.btn-primary {
+    background-color: rgb(0, 129, 250);
+}
+
+.btn-danger {
+    background-color: red;
+}
